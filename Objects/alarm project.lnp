@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\alarm project" 
+PRINT(".\Listings\alarm project.m51") RAMSIZE(256) 
