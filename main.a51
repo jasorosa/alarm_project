@@ -15,15 +15,18 @@ init:					MOV TMOD,#00010001h ; 16 bit mode for timer 0 and 1
 						MOV TH0,#0FBh ; MSB set 880Hz of timer 0 
 						MOV TL0,#08Fh ; LSB same  for LSB
 						MOV TH1, #00h ; about 15Hz for timer 1
-						MOV TL0, #00h ;
+						MOV TL1, #00h ;
 						SETB ET0 ; enable timer 0  on int
 						SETB ET1 ; enable timer 1 interrupt
 						SETB EX0 ; enable external interrupt 0
 						SETB EA ; enable int
 						SETB TR0 ; enable all interrupt
-						MOV R4, #00110100b ; 2 LSD 4 first bit = 4, 4 next = 3
+						SETB TR1
+						MOV R4, #00110100b ; 2 LSD 4 first = 4, 4 next = 3
 						MOV R5, #00010010b ; 2 MSD 4 next = 2, 4 next = 1 => code is 1234
 						MOV R0, #00h
+						MOV R6, #00h
+						MOV 31h, #0Fh ; RAM byte addressable to save previous state of keyboard (random initial value)
 						
 main:					LJMP $
 
@@ -34,7 +37,7 @@ timer0int:				MOV P0,#00001111b
 						JNB P0.1, dichotomy01
 						JNB P0.2, dichotomy02
 						JNB P0.3, dichotomy03
-						LJMP endint
+						LJMP nothing
 						
 dichotomy00:			CLR P0.4
 						CLR P0.5
@@ -151,8 +154,10 @@ letterC:				LJMP clearcode
 letterD:				LJMP endint
 letterE:				LJMP endint
 letterF:				LJMP endint
+nothing: 				MOV 31h,#0Fh
+						LJMP endint
 
-ext0int:				CJNE R6, #01h, endint ;if alarm is not OFF : end
+ext0int:				CJNE R6, #01h, intermEndInt ;if alarm is not OFF : end
 						LJMP detection
 
 detection:				MOV R7, #0E1h ; set counter to 225 to go to 15s
@@ -160,8 +165,13 @@ detection:				MOV R7, #0E1h ; set counter to 225 to go to 15s
 
 timer1int:				CJNE R6, #00h, next ; alarm is not activated : end otherwise next
 						LJMP endint
-next:					CPL P2.3 ; flashing led
-						DJNZ R7, endint ; noramlly screen !
+next:					DEC R7                               
+
+						; after debug code goes at least until there but P2.3 never goes on....
+						; see further : we may init the value of the counter R7 at a bad place but don't see where to put it
+
+						DJNZ R7, endint ; normally screen !
+						CLR P2.3 ; flashing led
 						CJNE R6, #01h, scream ; if not pre alarm it is pre alert and we can start SKRIMIN
 						CJNE R6, #03h, activation ; it is prealarm so activate alarm system
 						LJMP endint
@@ -176,25 +186,58 @@ scream:					INC R6
 						MOV TL0, #08Fh
 						LJMP endint
 						
-entercode:				CJNE R0, #00h, code2
+intermEndInt:			LJMP endint
+						
+entercode:				MOV A,31h
+						CJNE A,#0Fh, endint
+						LJMP continue
+continue:				MOV A, R1
+						MOV 31h, A
+						CJNE R0, #00h, code2 ;if counter of pressed button is 0 its the first number of the code
 						MOV  A, R1
 						SWAP A
 						MOV  R3, A
 code2:					CJNE R0, #01h, code3
-						MOV  A, R1
+						MOV  A, R1			;second number of the code
 						ADD  A, R3
 						MOV  R3, A
-code3:					CJNE R0, #03h, code4
-						MOV  A, R1
+code3:					CJNE R0, #02h, code4
+						MOV  A, R1			;third
 						SWAP A
 						MOV  R2, A
-code4:					CJNE R0, #04h, incR0
-						MOV  A, R1
+code4:					CJNE R0, #03h, incR0
+						MOV  A, R1			;fourth
 						ADD  A, R2
 						MOV  R2, A
-						MOV R0, #00h
+						LJMP checkCode
 incR0:					INC R0
 						LJMP endint
+						
+checkCode:				MOV R0, #00h
+						MOV A,R4
+						XRL A,R2
+						CPL A    ;XNOR to check that R4 and R2 are the same (if 11111111b)
+						CJNE A, #0FFh, wrong ;check if code == main code
+						MOV A,R5
+						XRL A,R3
+						CPL A
+						CJNE A, #0FFh, wrong
+						CLR P2.4 ;debug only
+						CJNE R6, #00h, desactivate ; if alarm is screaming
+						MOV R6, #01h ; we shut the alarm up but still activated
+						MOV R7, #0E1h ; put 15 seconds in the counter before prealarm => alarm (counter at 225 with 15Hz) 
+						
+						; problem might be R7 is always set to E1h ...
+						; maybe it's not where we should put this setting
+						
+						LJMP endint
+						
+desactivate:			MOV R6, #00h
+						MOV R7, #00h ; reset the counter if the alarm is desactivate
+						LJMP activation
+						
+wrong:					; screen
+						LJMP clearcode
 
 clearcode:				MOV R2, #00h
 						MOV R3, #00h

@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02c
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   0089          +1    55     IE0     BIT     89H
   0088          +1    56     IT0     BIT     88H
                 +1    57             
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     2
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     2
 
   0089          +1    58     TMOD    DATA    89H
                 +1    59     
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
                 +1   121     ;  IEN0  
   00AF          +1   122     EA      BIT     0AFH
   00AE          +1   123     EC      BIT     0AEH
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     3
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     3
 
   00AD          +1   124     ET2     BIT     0ADH
   00AC          +1   125     ES      BIT     0ACH
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00BC          +1   187     CANIDT1         DATA    0BCH
   00BD          +1   188     CANIDT2         DATA    0BDH    
   00BE          +1   189     CANIDT3         DATA    0BEH    
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     4
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     4
 
   00BF          +1   190     CANIDT4         DATA    0BFH    
   00C1          +1   191     CANGIE          DATA    0C1H
@@ -221,218 +221,265 @@ LOC  OBJ            LINE     SOURCE
 0000                 205     ORG 0000h
 0000 02001E          206     LJMP init
 000B                 207     ORG 000Bh
-000B 020040          208     LJMP timer0int
+000B 020047          208     LJMP timer0int
 0003                 209     ORG 0003h
-0003 020144          210     LJMP ext0int
+0003 020151          210     LJMP ext0int
 001B                 211     ORG 001Bh
-001B 02014F          212     LJMP timer1int
+001B 02015C          212     LJMP timer1int
                      213     
 001E 758901          214     init:                                   MOV TMOD,#00010001h ; 16 bit mode for timer 0 and 1
                               
 0021 758CFB          215                                                     MOV TH0,#0FBh ; MSB set 880Hz of timer 0 
 0024 758A8F          216                                                     MOV TL0,#08Fh ; LSB same  for LSB
 0027 758D00          217                                                     MOV TH1, #00h ; about 15Hz for timer 1
-002A 758A00          218                                                     MOV TL0, #00h ;
+002A 758B00          218                                                     MOV TL1, #00h ;
 002D D2A9            219                                                     SETB ET0 ; enable timer 0  on int
 002F D2AB            220                                                     SETB ET1 ; enable timer 1 interrupt
 0031 D2A8            221                                                     SETB EX0 ; enable external interrupt 0
 0033 D2AF            222                                                     SETB EA ; enable int
 0035 D28C            223                                                     SETB TR0 ; enable all interrupt
-0037 7C34            224                                                     MOV R4, #00110100b ; 2 LSD 4 first bit = 4,
-                              4 next = 3
-0039 7D12            225                                                     MOV R5, #00010010b ; 2 MSD 4 next = 2, 4 ne
+0037 D28E            224                                                     SETB TR1
+0039 7C34            225                                                     MOV R4, #00110100b ; 2 LSD 4 first = 4, 4 n
+                             ext = 3
+003B 7D12            226                                                     MOV R5, #00010010b ; 2 MSD 4 next = 2, 4 ne
                              xt = 1 => code is 1234
-003B 7800            226                                                     MOV R0, #00h
-                     227                                                     
-003D 02003D          228     main:                                   LJMP $
-                     229     
-                     230     
-0040 75800F          231     timer0int:                              MOV P0,#00001111b
-                     232                                                     
-0043 30800C          233                                                     JNB P0.0, dichotomy00
-0046 308117          234                                                     JNB P0.1, dichotomy01
-0049 308222          235                                                     JNB P0.2, dichotomy02
-004C 30832D          236                                                     JNB P0.3, dichotomy03
-004F 02019B          237                                                     LJMP endint
-                     238                                                     
-0052 C284            239     dichotomy00:                    CLR P0.4
-0054 C285            240                                                     CLR P0.5
-0056 D286            241                                                     SETB P0.6
-0058 D287            242                                                     SETB P0.7
-005A 30802D          243                                                     JNB P0.0, dichotomy00zero
-005D 0200C8          244                                                     LJMP dichotomy00one
-                     245                                                     
-0060 C284            246     dichotomy01:                    CLR P0.4
-0062 C285            247                                                     CLR P0.5
-0064 D286            248                                                     SETB P0.6
-0066 D287            249                                                     SETB P0.7
-0068 30812D          250                                                     JNB P0.1, dichotomy01zero
-006B 0200D6          251                                                     LJMP dichotomy01one
-                     252                                                     
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     5
+003D 7800            227                                                     MOV R0, #00h
+003F 7E00            228                                                     MOV R6, #00h
+0041 75310F          229                                                     MOV 31h, #0Fh ; RAM byte addressable to sav
+                             e previous state of keyboard (random initial value)
+                     230                                                     
+0044 020044          231     main:                                   LJMP $
+                     232     
+                     233     
+0047 75800F          234     timer0int:                              MOV P0,#00001111b
+                     235                                                     
+004A 30800C          236                                                     JNB P0.0, dichotomy00
+004D 308117          237                                                     JNB P0.1, dichotomy01
+0050 308222          238                                                     JNB P0.2, dichotomy02
+0053 30832D          239                                                     JNB P0.3, dichotomy03
+0056 02014B          240                                                     LJMP nothing
+                     241                                                     
+0059 C284            242     dichotomy00:                    CLR P0.4
+005B C285            243                                                     CLR P0.5
+005D D286            244                                                     SETB P0.6
+005F D287            245                                                     SETB P0.7
+0061 30802D          246                                                     JNB P0.0, dichotomy00zero
+0064 0200CF          247                                                     LJMP dichotomy00one
+                     248                                                     
+0067 C284            249     dichotomy01:                    CLR P0.4
+0069 C285            250                                                     CLR P0.5
+006B D286            251                                                     SETB P0.6
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     5
 
-006E C284            253     dichotomy02:                    CLR P0.4
-0070 C285            254                                                     CLR P0.5
-0072 D286            255                                                     SETB P0.6
-0074 D287            256                                                     SETB P0.7
-0076 30822D          257                                                     JNB P0.2, dichotomy02zero
-0079 0200E4          258                                                     LJMP dichotomy02one
-                     259     
-007C C284            260     dichotomy03:                    CLR P0.4
-007E C285            261                                                     CLR P0.5
-0080 D286            262                                                     SETB P0.6
-0082 D287            263                                                     SETB P0.7
-0084 30832D          264                                                     JNB P0.3, dichotomy03zero
-0087 0200F2          265                                                     LJMP dichotomy03one
-                     266                                                     
-008A C284            267     dichotomy00zero:                CLR P0.4
-008C D285            268                                                     SETB P0.5
-008E C286            269                                                     CLR P0.6
-0090 D287            270                                                     SETB P0.7
-0092 30802D          271                                                     JNB P0.0, intermediateletterC
-0095 02013B          272                                                     LJMP letterD
-                     273                                                     
-                     274                                                     
-0098 C284            275     dichotomy01zero:                CLR P0.4
-009A D285            276                                                     SETB P0.5
-009C C286            277                                                     CLR P0.6
-009E D287            278                                                     SETB P0.7
-00A0 308122          279                                                     JNB P0.1, intermediateletterB
-00A3 02010F          280                                                     LJMP three
-                     281                                                     
-00A6 C284            282     dichotomy02zero:                CLR P0.4
-00A8 D285            283                                                     SETB P0.5
-00AA C286            284                                                     CLR P0.6
-00AC D287            285                                                     SETB P0.7
-00AE 30824F          286                                                     JNB P0.2, zero
-00B1 02010A          287                                                     LJMP two
-                     288                                                     
-00B4 C284            289     dichotomy03zero:                CLR P0.4
-00B6 D285            290                                                     SETB P0.5
-00B8 C286            291                                                     CLR P0.6
-00BA D287            292                                                     SETB P0.7
-00BC 308373          293                                                     JNB P0.3, letterA
-00BF 020105          294                                                     LJMP one
-                     295     
-00C2 020138          296     intermediateletterC:    LJMP letterC ; too long jump otherwise
-                     297     
-00C5 020135          298     intermediateletterB:    LJMP letterB
-                     299     
-00C8 C284            300     dichotomy00one:                 CLR P0.4
-00CA D285            301                                                     SETB P0.5
-00CC C286            302                                                     CLR P0.6
-00CE D287            303                                                     SETB P0.7
-00D0 30806B          304                                                     JNB P0.0, letterE
-00D3 020141          305                                                     LJMP letterF
-                     306                                                     
-00D6 C284            307     dichotomy01one:                 CLR P0.4
-00D8 D285            308                                                     SETB P0.5
-00DA C286            309                                                     CLR P0.6
-00DC D287            310                                                     SETB P0.7
-00DE 30813D          311                                                     JNB P0.1, six
-00E1 02012D          312                                                     LJMP nine
-                     313                                                     
-00E4 C284            314     dichotomy02one:                 CLR P0.4
-00E6 D285            315                                                     SETB P0.5
-00E8 C286            316                                                     CLR P0.6
-00EA D287            317                                                     SETB P0.7
-00EC 30822A          318                                                     JNB P0.2, five
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     6
+006D D287            252                                                     SETB P0.7
+006F 30812D          253                                                     JNB P0.1, dichotomy01zero
+0072 0200DD          254                                                     LJMP dichotomy01one
+                     255                                                     
+0075 C284            256     dichotomy02:                    CLR P0.4
+0077 C285            257                                                     CLR P0.5
+0079 D286            258                                                     SETB P0.6
+007B D287            259                                                     SETB P0.7
+007D 30822D          260                                                     JNB P0.2, dichotomy02zero
+0080 0200EB          261                                                     LJMP dichotomy02one
+                     262     
+0083 C284            263     dichotomy03:                    CLR P0.4
+0085 C285            264                                                     CLR P0.5
+0087 D286            265                                                     SETB P0.6
+0089 D287            266                                                     SETB P0.7
+008B 30832D          267                                                     JNB P0.3, dichotomy03zero
+008E 0200F9          268                                                     LJMP dichotomy03one
+                     269                                                     
+0091 C284            270     dichotomy00zero:                CLR P0.4
+0093 D285            271                                                     SETB P0.5
+0095 C286            272                                                     CLR P0.6
+0097 D287            273                                                     SETB P0.7
+0099 30802D          274                                                     JNB P0.0, intermediateletterC
+009C 020142          275                                                     LJMP letterD
+                     276                                                     
+                     277                                                     
+009F C284            278     dichotomy01zero:                CLR P0.4
+00A1 D285            279                                                     SETB P0.5
+00A3 C286            280                                                     CLR P0.6
+00A5 D287            281                                                     SETB P0.7
+00A7 308122          282                                                     JNB P0.1, intermediateletterB
+00AA 020116          283                                                     LJMP three
+                     284                                                     
+00AD C284            285     dichotomy02zero:                CLR P0.4
+00AF D285            286                                                     SETB P0.5
+00B1 C286            287                                                     CLR P0.6
+00B3 D287            288                                                     SETB P0.7
+00B5 30824F          289                                                     JNB P0.2, zero
+00B8 020111          290                                                     LJMP two
+                     291                                                     
+00BB C284            292     dichotomy03zero:                CLR P0.4
+00BD D285            293                                                     SETB P0.5
+00BF C286            294                                                     CLR P0.6
+00C1 D287            295                                                     SETB P0.7
+00C3 308373          296                                                     JNB P0.3, letterA
+00C6 02010C          297                                                     LJMP one
+                     298     
+00C9 02013F          299     intermediateletterC:    LJMP letterC ; too long jump otherwise
+                     300     
+00CC 02013C          301     intermediateletterB:    LJMP letterB
+                     302     
+00CF C284            303     dichotomy00one:                 CLR P0.4
+00D1 D285            304                                                     SETB P0.5
+00D3 C286            305                                                     CLR P0.6
+00D5 D287            306                                                     SETB P0.7
+00D7 30806B          307                                                     JNB P0.0, letterE
+00DA 020148          308                                                     LJMP letterF
+                     309                                                     
+00DD C284            310     dichotomy01one:                 CLR P0.4
+00DF D285            311                                                     SETB P0.5
+00E1 C286            312                                                     CLR P0.6
+00E3 D287            313                                                     SETB P0.7
+00E5 30813D          314                                                     JNB P0.1, six
+00E8 020134          315                                                     LJMP nine
+                     316                                                     
+00EB C284            317     dichotomy02one:                 CLR P0.4
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     6
 
-00EF 020128          319                                                     LJMP eight
-                     320                                                     
-00F2 C284            321     dichotomy03one:                 CLR P0.4
-00F4 D285            322                                                     SETB P0.5
-00F6 C286            323                                                     CLR P0.6
-00F8 D287            324                                                     SETB P0.7
-00FA 308317          325                                                     JNB P0.3, four
-00FD 020123          326                                                     LJMP seven
-                     327                                                     
-0100 7900            328     zero:                                   MOV R1, #00h
-0102 020174          329                                                     LJMP entercode
-0105 7901            330     one:                                    MOV R1, #01h
-0107 020174          331                                                     LJMP entercode
-010A 7902            332     two:                                    MOV R1, #02h
-010C 020174          333                                                     LJMP entercode
-010F 7903            334     three:                                  MOV R1, #03h
-0111 020174          335                                                     LJMP entercode
-0114 7904            336     four:                                   MOV R1, #04h
-0116 020174          337                                                     LJMP entercode
-0119 7905            338     five:                                   MOV R1, #05h
-011B 020174          339                                                     LJMP entercode
-011E 7906            340     six:                                    MOV R1, #06h
-0120 020174          341                                                     LJMP entercode
-0123 7907            342     seven:                                  MOV R1, #07h
-0125 020174          343                                                     LJMP entercode
-0128 7908            344     eight:                                  MOV R1, #08h
-012A 020174          345                                                     LJMP entercode
-012D 7909            346     nine:                                   MOV R1, #09h
-012F 020174          347                                                     LJMP entercode
-0132 02019B          348     letterA:                                LJMP endint
-0135 02019B          349     letterB:                                LJMP endint
-0138 020192          350     letterC:                                LJMP clearcode
-013B 02019B          351     letterD:                                LJMP endint
-013E 02019B          352     letterE:                                LJMP endint
-0141 02019B          353     letterF:                                LJMP endint
-                     354     
-0144 BE0154          355     ext0int:                                CJNE R6, #01h, endint ;if alarm is not OFF : end
-0147 02014A          356                                                     LJMP detection
-                     357     
-014A 7FE1            358     detection:                              MOV R7, #0E1h ; set counter to 225 to go to 15s
-014C 02019B          359                                                     LJMP endint
-                     360     
-014F BE0003          361     timer1int:                              CJNE R6, #00h, next ; alarm is not activated : end 
+00ED D285            318                                                     SETB P0.5
+00EF C286            319                                                     CLR P0.6
+00F1 D287            320                                                     SETB P0.7
+00F3 30822A          321                                                     JNB P0.2, five
+00F6 02012F          322                                                     LJMP eight
+                     323                                                     
+00F9 C284            324     dichotomy03one:                 CLR P0.4
+00FB D285            325                                                     SETB P0.5
+00FD C286            326                                                     CLR P0.6
+00FF D287            327                                                     SETB P0.7
+0101 308317          328                                                     JNB P0.3, four
+0104 02012A          329                                                     LJMP seven
+                     330                                                     
+0107 7900            331     zero:                                   MOV R1, #00h
+0109 020185          332                                                     LJMP entercode
+010C 7901            333     one:                                    MOV R1, #01h
+010E 020185          334                                                     LJMP entercode
+0111 7902            335     two:                                    MOV R1, #02h
+0113 020185          336                                                     LJMP entercode
+0116 7903            337     three:                                  MOV R1, #03h
+0118 020185          338                                                     LJMP entercode
+011B 7904            339     four:                                   MOV R1, #04h
+011D 020185          340                                                     LJMP entercode
+0120 7905            341     five:                                   MOV R1, #05h
+0122 020185          342                                                     LJMP entercode
+0125 7906            343     six:                                    MOV R1, #06h
+0127 020185          344                                                     LJMP entercode
+012A 7907            345     seven:                                  MOV R1, #07h
+012C 020185          346                                                     LJMP entercode
+012F 7908            347     eight:                                  MOV R1, #08h
+0131 020185          348                                                     LJMP entercode
+0134 7909            349     nine:                                   MOV R1, #09h
+0136 020185          350                                                     LJMP entercode
+0139 0201DC          351     letterA:                                LJMP endint
+013C 0201DC          352     letterB:                                LJMP endint
+013F 0201D3          353     letterC:                                LJMP clearcode
+0142 0201DC          354     letterD:                                LJMP endint
+0145 0201DC          355     letterE:                                LJMP endint
+0148 0201DC          356     letterF:                                LJMP endint
+014B 75310F          357     nothing:                                MOV 31h,#0Fh
+014E 0201DC          358                                                     LJMP endint
+                     359     
+0151 BE012E          360     ext0int:                                CJNE R6, #01h, intermEndInt ;if alarm is not OFF : 
+                             end
+0154 020157          361                                                     LJMP detection
+                     362     
+0157 7FE1            363     detection:                              MOV R7, #0E1h ; set counter to 225 to go to 15s
+0159 0201DC          364                                                     LJMP endint
+                     365     
+015C BE0003          366     timer1int:                              CJNE R6, #00h, next ; alarm is not activated : end 
                              otherwise next
-0152 02019B          362                                                     LJMP endint
-0155 B2A3            363     next:                                   CPL P2.3 ; flashing led
-0157 DF42            364                                                     DJNZ R7, endint ; noramlly screen !
-0159 BE010C          365                                                     CJNE R6, #01h, scream ; if not pre alarm it
+015F 0201DC          367                                                     LJMP endint
+0162 1F              368     next:                                   DEC R7
+0163 DF77            369                                                     DJNZ R7, endint ; normally screen !
+0165 C2A3            370                                                     CLR P2.3 ; flashing led
+0167 BE010C          371                                                     CJNE R6, #01h, scream ; if not pre alarm it
                               is pre alert and we can start SKRIMIN
-015C BE0303          366                                                     CJNE R6, #03h, activation ; it is prealarm 
+016A BE0303          372                                                     CJNE R6, #03h, activation ; it is prealarm 
                              so activate alarm system
-015F 02019B          367                                                     LJMP endint
-                     368                                                     
-0162 0E              369     activation:                             INC R6
-0163 C2A4            370                                                     CLR P2.4 ; led shows alarm is on
-0165 02019B          371                                                     LJMP endint
-                     372                                                     
-0168 0E              373     scream:                                 INC R6
-0169 B2A2            374                                                     CPL P2.2 ; change state of buzzer
-016B 758CFB          375                                                     MOV TH0, #0FBh ; freq at 440
-016E 758A8F          376                                                     MOV TL0, #08Fh
-0171 02019B          377                                                     LJMP endint
+016D 0201DC          373                                                     LJMP endint
+                     374                                                     
+0170 0E              375     activation:                             INC R6
+0171 C2A4            376                                                     CLR P2.4 ; led shows alarm is on
+0173 0201DC          377                                                     LJMP endint
                      378                                                     
-0174 B80003          379     entercode:                              CJNE R0, #00h, code2
-0177 E9              380                                                     MOV  A, R1
-0178 C4              381                                                     SWAP A
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     7
+0176 0E              379     scream:                                 INC R6
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     7
 
-0179 FB              382                                                     MOV  R3, A
-017A B80103          383     code2:                                  CJNE R0, #01h, code3
-017D E9              384                                                     MOV  A, R1
-017E 2B              385                                                     ADD  A, R3
-017F FB              386                                                     MOV  R3, A
-0180 B80303          387     code3:                                  CJNE R0, #03h, code4
-0183 E9              388                                                     MOV  A, R1
-0184 C4              389                                                     SWAP A
-0185 FA              390                                                     MOV  R2, A
-0186 B80405          391     code4:                                  CJNE R0, #04h, incR0
-0189 E9              392                                                     MOV  A, R1
-018A 2A              393                                                     ADD  A, R2
-018B FA              394                                                     MOV  R2, A
-018C 7800            395                                                     MOV R0, #00h
-018E 08              396     incR0:                                  INC R0
-018F 02019B          397                                                     LJMP endint
-                     398     
-0192 7A00            399     clearcode:                              MOV R2, #00h
-0194 7B00            400                                                     MOV R3, #00h
-0196 7800            401                                                     MOV R0, #00h
-0198 02019B          402                                                     LJMP endint
-019B 32              403     endint:                                 RETI
-                     404     end                                             
+0177 B2A2            380                                                     CPL P2.2 ; change state of buzzer
+0179 758CFB          381                                                     MOV TH0, #0FBh ; freq at 440
+017C 758A8F          382                                                     MOV TL0, #08Fh
+017F 0201DC          383                                                     LJMP endint
+                     384                                                     
+0182 0201DC          385     intermEndInt:                   LJMP endint
+                     386                                                     
+0185 E531            387     entercode:                              MOV A,31h
+0187 B40F52          388                                                     CJNE A,#0Fh, endint
+018A 02018D          389                                                     LJMP continue
+018D E9              390     continue:                               MOV A, R1
+018E F531            391                                                     MOV 31h, A
+0190 B80003          392                                                     CJNE R0, #00h, code2 ;if counter of pressed
+                              button is 0 its the first number of the code
+0193 E9              393                                                     MOV  A, R1
+0194 C4              394                                                     SWAP A
+0195 FB              395                                                     MOV  R3, A
+0196 B80103          396     code2:                                  CJNE R0, #01h, code3
+0199 E9              397                                                     MOV  A, R1                      ;second num
+                             ber of the code
+019A 2B              398                                                     ADD  A, R3
+019B FB              399                                                     MOV  R3, A
+019C B80203          400     code3:                                  CJNE R0, #02h, code4
+019F E9              401                                                     MOV  A, R1                      ;third
+01A0 C4              402                                                     SWAP A
+01A1 FA              403                                                     MOV  R2, A
+01A2 B80306          404     code4:                                  CJNE R0, #03h, incR0
+01A5 E9              405                                                     MOV  A, R1                      ;fourth
+01A6 2A              406                                                     ADD  A, R2
+01A7 FA              407                                                     MOV  R2, A
+01A8 0201AF          408                                                     LJMP checkCode
+01AB 08              409     incR0:                                  INC R0
+01AC 0201DC          410                                                     LJMP endint
+                     411                                                     
+01AF 7800            412     checkCode:                              MOV R0, #00h
+01B1 EC              413                                                     MOV A,R4
+01B2 6A              414                                                     XRL A,R2
+01B3 F4              415                                                     CPL A    ;XNOR to check that R4 and R2 are 
+                             the same (if 11111111b)
+01B4 B4FF19          416                                                     CJNE A, #0FFh, wrong ;check if code == main
+                              code
+01B7 ED              417                                                     MOV A,R5
+01B8 6B              418                                                     XRL A,R3
+01B9 F4              419                                                     CPL A
+01BA B4FF13          420                                                     CJNE A, #0FFh, wrong
+01BD C2A4            421                                                     CLR P2.4 ;debug only
+01BF BE0007          422                                                     CJNE R6, #00h, desactivate ; if alarm is sc
+                             reaming
+01C2 7E01            423                                                     MOV R6, #01h ; we shut the alarm up but sti
+                             ll activated
+01C4 7FE1            424                                                     MOV R7, #0E1h ; put 15 seconds in the count
+                             er before prealarm => alarm (counter at 225 with 15Hz)
+01C6 0201DC          425                                                     LJMP endint
+                     426                                                     
+01C9 7E00            427     desactivate:                    MOV R6, #00h
+01CB 7F00            428                                                     MOV R7, #00h ; reset the counter if the ala
+                             rm is desactivate
+01CD 020170          429                                                     LJMP activation
+                     430                                                     
+01D0                 431     wrong:                                  ; screen
+01D0 0201D3          432                                                     LJMP clearcode
+                     433     
+01D3 7A00            434     clearcode:                              MOV R2, #00h
+01D5 7B00            435                                                     MOV R3, #00h
+01D7 7800            436                                                     MOV R0, #00h
+01D9 0201DC          437                                                     LJMP endint
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     8
+
+01DC 32              438     endint:                                 RETI
+                     439     end                                             
                                                                              
                                              
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     8
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE     9
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -442,7 +489,7 @@ N A M E              T Y P E  V A L U E   ATTRIBUTES
 
 AC. . . . . . . . .  B ADDR   00D0H.6 A   
 ACC . . . . . . . .  D ADDR   00E0H   A   
-ACTIVATION. . . . .  C ADDR   0162H   A   
+ACTIVATION. . . . .  C ADDR   0170H   A   
 ADCF. . . . . . . .  D ADDR   00F6H   A   
 ADCLK . . . . . . .  D ADDR   00F2H   A   
 ADCON . . . . . . .  D ADDR   00F3H   A   
@@ -500,7 +547,7 @@ CCAPM1. . . . . . .  D ADDR   00DBH   A
 CCAPM2. . . . . . .  D ADDR   00DCH   A   
 CCAPM3. . . . . . .  D ADDR   00DDH   A   
 CCAPM4. . . . . . .  D ADDR   00DEH   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE     9
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE    10
 
 CCF0. . . . . . . .  B ADDR   00D0H.0 A   
 CCF1. . . . . . . .  B ADDR   00D0H.1 A   
@@ -510,30 +557,33 @@ CCF4. . . . . . . .  B ADDR   00D0H.4 A
 CCON. . . . . . . .  D ADDR   00D8H   A   
 CF. . . . . . . . .  B ADDR   00D8H.7 A   
 CH. . . . . . . . .  D ADDR   00F9H   A   
+CHECKCODE . . . . .  C ADDR   01AFH   A   
 CKCON . . . . . . .  D ADDR   008FH   A   
 CL. . . . . . . . .  D ADDR   00E9H   A   
-CLEARCODE . . . . .  C ADDR   0192H   A   
+CLEARCODE . . . . .  C ADDR   01D3H   A   
 CMOD. . . . . . . .  D ADDR   00D9H   A   
-CODE2 . . . . . . .  C ADDR   017AH   A   
-CODE3 . . . . . . .  C ADDR   0180H   A   
-CODE4 . . . . . . .  C ADDR   0186H   A   
+CODE2 . . . . . . .  C ADDR   0196H   A   
+CODE3 . . . . . . .  C ADDR   019CH   A   
+CODE4 . . . . . . .  C ADDR   01A2H   A   
+CONTINUE. . . . . .  C ADDR   018DH   A   
 CP_RL2. . . . . . .  B ADDR   00C8H.0 A   
 CR. . . . . . . . .  B ADDR   00D8H.6 A   
 CY. . . . . . . . .  B ADDR   00D0H.7 A   
 C_T2. . . . . . . .  B ADDR   00C8H.1 A   
-DETECTION . . . . .  C ADDR   014AH   A   
-DICHOTOMY00 . . . .  C ADDR   0052H   A   
-DICHOTOMY00ONE. . .  C ADDR   00C8H   A   
-DICHOTOMY00ZERO . .  C ADDR   008AH   A   
-DICHOTOMY01 . . . .  C ADDR   0060H   A   
-DICHOTOMY01ONE. . .  C ADDR   00D6H   A   
-DICHOTOMY01ZERO . .  C ADDR   0098H   A   
-DICHOTOMY02 . . . .  C ADDR   006EH   A   
-DICHOTOMY02ONE. . .  C ADDR   00E4H   A   
-DICHOTOMY02ZERO . .  C ADDR   00A6H   A   
-DICHOTOMY03 . . . .  C ADDR   007CH   A   
-DICHOTOMY03ONE. . .  C ADDR   00F2H   A   
-DICHOTOMY03ZERO . .  C ADDR   00B4H   A   
+DESACTIVATE . . . .  C ADDR   01C9H   A   
+DETECTION . . . . .  C ADDR   0157H   A   
+DICHOTOMY00 . . . .  C ADDR   0059H   A   
+DICHOTOMY00ONE. . .  C ADDR   00CFH   A   
+DICHOTOMY00ZERO . .  C ADDR   0091H   A   
+DICHOTOMY01 . . . .  C ADDR   0067H   A   
+DICHOTOMY01ONE. . .  C ADDR   00DDH   A   
+DICHOTOMY01ZERO . .  C ADDR   009FH   A   
+DICHOTOMY02 . . . .  C ADDR   0075H   A   
+DICHOTOMY02ONE. . .  C ADDR   00EBH   A   
+DICHOTOMY02ZERO . .  C ADDR   00ADH   A   
+DICHOTOMY03 . . . .  C ADDR   0083H   A   
+DICHOTOMY03ONE. . .  C ADDR   00F9H   A   
+DICHOTOMY03ZERO . .  C ADDR   00BBH   A   
 DPH . . . . . . . .  D ADDR   0083H   A   
 DPL . . . . . . . .  D ADDR   0082H   A   
 EA. . . . . . . . .  B ADDR   00A8H.7 A   
@@ -541,9 +591,9 @@ EADC. . . . . . . .  B ADDR   00E8H.1 A
 EC. . . . . . . . .  B ADDR   00A8H.6 A   
 ECAN. . . . . . . .  B ADDR   00E8H.0 A   
 EECON . . . . . . .  D ADDR   00D2H   A   
-EIGHT . . . . . . .  C ADDR   0128H   A   
-ENDINT. . . . . . .  C ADDR   019BH   A   
-ENTERCODE . . . . .  C ADDR   0174H   A   
+EIGHT . . . . . . .  C ADDR   012FH   A   
+ENDINT. . . . . . .  C ADDR   01DCH   A   
+ENTERCODE . . . . .  C ADDR   0185H   A   
 ES. . . . . . . . .  B ADDR   00A8H.4 A   
 ET0 . . . . . . . .  B ADDR   00A8H.1 A   
 ET1 . . . . . . . .  B ADDR   00A8H.3 A   
@@ -553,41 +603,43 @@ EX0 . . . . . . . .  B ADDR   00A8H.0 A
 EX1 . . . . . . . .  B ADDR   00A8H.2 A   
 EXEN2 . . . . . . .  B ADDR   00C8H.3 A   
 EXF2. . . . . . . .  B ADDR   00C8H.6 A   
-EXT0INT . . . . . .  C ADDR   0144H   A   
+EXT0INT . . . . . .  C ADDR   0151H   A   
 F0. . . . . . . . .  B ADDR   00D0H.5 A   
 FCON. . . . . . . .  D ADDR   00D1H   A   
 FE. . . . . . . . .  B ADDR   0098H.7 A   
-FIVE. . . . . . . .  C ADDR   0119H   A   
-FOUR. . . . . . . .  C ADDR   0114H   A   
+FIVE. . . . . . . .  C ADDR   0120H   A   
+FOUR. . . . . . . .  C ADDR   011BH   A   
 FPGACON . . . . . .  D ADDR   00F1H   A   
 IE0 . . . . . . . .  B ADDR   0088H.1 A   
 IE1 . . . . . . . .  B ADDR   0088H.3 A   
 IEN0. . . . . . . .  D ADDR   00A8H   A   
 IEN1. . . . . . . .  D ADDR   00E8H   A   
-INCR0 . . . . . . .  C ADDR   018EH   A   
+INCR0 . . . . . . .  C ADDR   01ABH   A   
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE    11
+
 INIT. . . . . . . .  C ADDR   001EH   A   
 INT0. . . . . . . .  B ADDR   00B0H.2 A   
 INT1. . . . . . . .  B ADDR   00B0H.3 A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE    10
-
-INTERMEDIATELETTERB  C ADDR   00C5H   A   
-INTERMEDIATELETTERC  C ADDR   00C2H   A   
+INTERMEDIATELETTERB  C ADDR   00CCH   A   
+INTERMEDIATELETTERC  C ADDR   00C9H   A   
+INTERMENDINT. . . .  C ADDR   0182H   A   
 IPH0. . . . . . . .  D ADDR   00B7H   A   
 IPH1. . . . . . . .  D ADDR   00F7H   A   
 IPL0. . . . . . . .  D ADDR   00B8H   A   
 IPL1. . . . . . . .  D ADDR   00F8H   A   
 IT0 . . . . . . . .  B ADDR   0088H.0 A   
 IT1 . . . . . . . .  B ADDR   0088H.2 A   
-LETTERA . . . . . .  C ADDR   0132H   A   
-LETTERB . . . . . .  C ADDR   0135H   A   
-LETTERC . . . . . .  C ADDR   0138H   A   
-LETTERD . . . . . .  C ADDR   013BH   A   
-LETTERE . . . . . .  C ADDR   013EH   A   
-LETTERF . . . . . .  C ADDR   0141H   A   
-MAIN. . . . . . . .  C ADDR   003DH   A   
-NEXT. . . . . . . .  C ADDR   0155H   A   
-NINE. . . . . . . .  C ADDR   012DH   A   
-ONE . . . . . . . .  C ADDR   0105H   A   
+LETTERA . . . . . .  C ADDR   0139H   A   
+LETTERB . . . . . .  C ADDR   013CH   A   
+LETTERC . . . . . .  C ADDR   013FH   A   
+LETTERD . . . . . .  C ADDR   0142H   A   
+LETTERE . . . . . .  C ADDR   0145H   A   
+LETTERF . . . . . .  C ADDR   0148H   A   
+MAIN. . . . . . . .  C ADDR   0044H   A   
+NEXT. . . . . . . .  C ADDR   0162H   A   
+NINE. . . . . . . .  C ADDR   0134H   A   
+NOTHING . . . . . .  C ADDR   014BH   A   
+ONE . . . . . . . .  C ADDR   010CH   A   
 OV. . . . . . . . .  B ADDR   00D0H.2 A   
 P . . . . . . . . .  B ADDR   00D0H.0 A   
 P0. . . . . . . . .  D ADDR   0080H   A   
@@ -611,9 +663,9 @@ SADDR . . . . . . .  D ADDR   00A9H   A
 SADEN . . . . . . .  D ADDR   00B9H   A   
 SBUF. . . . . . . .  D ADDR   0099H   A   
 SCON. . . . . . . .  D ADDR   0098H   A   
-SCREAM. . . . . . .  C ADDR   0168H   A   
-SEVEN . . . . . . .  C ADDR   0123H   A   
-SIX . . . . . . . .  C ADDR   011EH   A   
+SCREAM. . . . . . .  C ADDR   0176H   A   
+SEVEN . . . . . . .  C ADDR   012AH   A   
+SIX . . . . . . . .  C ADDR   0125H   A   
 SM0 . . . . . . . .  B ADDR   0098H.7 A   
 SM1 . . . . . . . .  B ADDR   0098H.6 A   
 SM2 . . . . . . . .  B ADDR   0098H.5 A   
@@ -631,25 +683,26 @@ TF2 . . . . . . . .  B ADDR   00C8H.7 A
 TH0 . . . . . . . .  D ADDR   008CH   A   
 TH1 . . . . . . . .  D ADDR   008DH   A   
 TH2 . . . . . . . .  D ADDR   00CDH   A   
-THREE . . . . . . .  C ADDR   010FH   A   
-TI. . . . . . . . .  B ADDR   0098H.1 A   
-TIMER0INT . . . . .  C ADDR   0040H   A   
-TIMER1INT . . . . .  C ADDR   014FH   A   
-TL0 . . . . . . . .  D ADDR   008AH   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 11:41:21 PAGE    11
+A51 MACRO ASSEMBLER  MAIN                                                                 05/09/2016 18:10:41 PAGE    12
 
+THREE . . . . . . .  C ADDR   0116H   A   
+TI. . . . . . . . .  B ADDR   0098H.1 A   
+TIMER0INT . . . . .  C ADDR   0047H   A   
+TIMER1INT . . . . .  C ADDR   015CH   A   
+TL0 . . . . . . . .  D ADDR   008AH   A   
 TL1 . . . . . . . .  D ADDR   008BH   A   
 TL2 . . . . . . . .  D ADDR   00CCH   A   
 TMOD. . . . . . . .  D ADDR   0089H   A   
 TR0 . . . . . . . .  B ADDR   0088H.4 A   
 TR1 . . . . . . . .  B ADDR   0088H.6 A   
 TR2 . . . . . . . .  B ADDR   00C8H.2 A   
-TWO . . . . . . . .  C ADDR   010AH   A   
+TWO . . . . . . . .  C ADDR   0111H   A   
 TXD . . . . . . . .  B ADDR   00B0H.1 A   
 WDTPRG. . . . . . .  D ADDR   00A7H   A   
 WDTRST. . . . . . .  D ADDR   00A6H   A   
 WR. . . . . . . . .  B ADDR   00B0H.6 A   
-ZERO. . . . . . . .  C ADDR   0100H   A   
+WRONG . . . . . . .  C ADDR   01D0H   A   
+ZERO. . . . . . . .  C ADDR   0107H   A   
 
 
 REGISTER BANK(S) USED: 0 

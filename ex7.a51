@@ -13,7 +13,9 @@ init:					MOV TMOD,#01h ;
 						SETB EA ; enable int
 						SETB TR0 ; enable all interrupt
 						
-main:					LJMP $
+main:					CJNE R1, #01h, continue
+						CLR P2.3
+continue:				LJMP $
 ; first step is to check if a button is pressed by setting all rows to 0 and all columns to 1 and see which columns is activated
 ; then use dichotomy : 2 first rows at 0 two next at 1, if no columns goes to 0, it is one of the 2 lasts rows, otherwise the two first
 ; last step is again dichotomy : even rows to 1 and odd rows to 0 to decide which is the button presssed
@@ -114,10 +116,11 @@ dichotomy03one: 		CLR P0.4
 						LJMP seven
 						
 zero:					LJMP buzzer
-one:					LJMP led1
+one:					MOV R1, #01h
+						LJMP endint
 two:					LJMP buzzer
 three:					LJMP buzzer
-four:					LJMP led2
+four:					LJMP endint
 five:					LJMP buzzer
 six:					LJMP buzzer
 seven:					LJMP buzzer
