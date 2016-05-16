@@ -68,7 +68,7 @@ main:					LJMP main
 
 
 
-
+;------------------------------------   KEYBOARD   --------------------------------------------------
 keyboardISR:			PUSH PSW ; review PSW, ACC and PUSH/POP !!!!
 						PUSH ACC
 						CLR P2.3 ; debug
@@ -284,7 +284,7 @@ endKeyboardISR:			MOV TH1,#0Bh
 						RETI						
 
 
-
+;------------------------------------   EXT INTERRUPT (PIR SENSOR)   --------------------------------------------------
 extISR:					PUSH PSW ; STILL HAVE TO TEST PIR SENSOR AND CONFIGURE THE ISR CORRECTLY
 						PUSH ACC
 						CJNE R6, #01h, endExtISR ;if alarm is not OFF : end
@@ -298,7 +298,7 @@ endExtISR:				POP ACC
 						RETI
 
 
-
+;------------------------------------   "MAIN" PROGRAM   --------------------------------------------------
 
 mainISR:				PUSH PSW
 						PUSH ACC
@@ -328,7 +328,7 @@ endMainISR:				MOV TH0,#0FBh ; MSB set 880Hz of timer 0
 
 
 			
-			
+;------------------------------------   DISPLAY   --------------------------------------------------			
 screenISR:				PUSH PSW
 						PUSH ACC
 						SETB RS1
@@ -437,9 +437,7 @@ endScreenISR:
 						RETI		
 
 
-;Functions
-
-;Code Memory Data
+;;------------------------------------   CODE MEM DATA   --------------------------------------------------
 
 lines:		DB 01111111b ; pattern to easily follow lines
 			DB 10111111b
