@@ -25,14 +25,6 @@ init:					MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1
 						MOV TL1, #0DBh ;
 						MOV TH2,#0FBh 
 						MOV TL2,#08Fh 
-						SETB ET0 ; enable timer 0 interrupt
-						SETB ET1 ; enable timer 1 interrupt
-						SETB ET2 ; enable timer 2 interrupt
-						SETB EX1 ; enable external interrupt 1
-						SETB EA ; enable int
-						SETB TR0 ; enable timer 0, 1, 2
-						SETB TR1
-						SETB TR2
 						MOV R4, #00110100b ; 2 LSD 4 first = 4, 4 next = 3
 						MOV R5, #00010010b ; 2 MSD 4 next = 2, 4 next = 1 => code is 1234
 						MOV R0, #00h
@@ -40,18 +32,14 @@ init:					MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1
 						MOV 31h, #0Fh ; RAM byte addressable to save previous state of keyboard (random initial value)
 						MOV 32h, #0Fh ; RAM byte addressable to store temporarily "data pointer" for screen (random init value) 
 						
-						MOV DPTR, #KeyUS ; init screen RAM 38h to 3Fh corresponds to the 8 blocks. 4 empty blocks and 4 UnderScore (for the password)
-						MOVX A, @DPTR
-						MOV 38h, A
-						MOV 39h, A
-						MOV 3Ah, A
-						MOV 3Bh, A
-						MOV DPTR, #KeyEmpty
-						MOVX A, @DPTR
-						MOV 3Ch, A
-						MOV 3Dh, A
-						MOV 3Eh, A
-						MOV 3Fh, A
+						MOV 38h, #88
+						MOV 39h, #88
+						MOV 3Ah, #88
+						MOV 3Bh, #88
+						MOV 3Ch, #80
+						MOV 3Dh, #80
+						MOV 3Eh, #80
+						MOV 3Fh, #80
 						
 						CLR DATA_BITS
 						CLR SHIFT
@@ -63,6 +51,15 @@ init:					MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1
 						MOV R5, #0
 						CLR RS1
 						CLR RS0
+						SETB ET0 ; enable timer 0 interrupt
+						SETB ET1 ; enable timer 1 interrupt
+						SETB ET2 ; enable timer 2 interrupt
+						SETB EX1 ; enable external interrupt 1
+						SETB EA ; enable int
+						SETB TR0 ; enable timer 0, 1, 2
+						SETB TR1
+						SETB TR2
+						
 
 
 
@@ -341,7 +338,7 @@ screenISR:				PUSH PSW
 						CLR STORE
 						CLR P2.3
 						MOV A,R5 ; init = 0, its index of the block we are dealing with
-						SUBB A, R5; WATT ? R5 - R5 = 0 -> something wrong, should delete this line right?
+						;SUBB A, #1; WATT ? R5 - R5 = 0 -> something wrong, should delete this line right?
 						MOV R4,A
 						
 						MOV DPTR, #KeyEmpty ; first some empty blocks 
@@ -371,11 +368,10 @@ skip:					MOV DPTR, #Key0 ;start index at Key0
 						; number of repeated pattern
 loop4b:					MOV A, R6 ; R6 is an index for the used row
 						CJNE A,#7, column_dispb ; reset row index when complete
-resetb:					MOV A, 38h ;load index to get the good key if 38h = 16, Key0 index + 16 = Key2  !!!!!!!!! this is the reset, not sure we set A at the right place
-						ADD A, R5  ; !!!!! same 
-						MOV R6, #0
-						
-column_dispb:			MOVC A, @A+DPTR
+resetb:					MOV R6, #0
+						MOV A, #0
+column_dispb:			ADD A, 38h
+						MOVC A, @A+DPTR
 						MOV R3, #5
 						;each column bit (one by one)
 loop3b:					RRC A ;right shift
@@ -386,10 +382,9 @@ loop3b:					RRC A ;right shift
 
 						;DJNZ R4, loop4b NO NEED
 
-						MOV A, #8
+						MOV A, #07h
 						SUBB A,R5  ; number of empty block at left: 8 : MUST BE CHANGED
 						MOV R4,A
-
 						MOV DPTR, #KeyEmpty
 
 						; number of repeated pattern
@@ -428,17 +423,17 @@ loop2:					RRC A
 						CLR STORE
 
 						INC R6
-						;CLR RS1
 						INC R5; increment the counter of Blocks 
 						CJNE R5, #8, endScreenISR
 						MOV R5, #0 	
-						; TIMER RESETTING
-
+						
 endScreenISR:			
 						CLR RS0
 						CLR RS1
 						MOV TH0,#0FFh
 						MOV TL0,#0FFh
+						POP ACC
+						POP PSW
 						RETI		
 
 

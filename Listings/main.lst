@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02c
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   0088          +1    55     IT0     BIT     88H
                 +1    56             
   0089          +1    57     TMOD    DATA    89H
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     2
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     2
 
                 +1    58     
   00C8          +1    59     T2CON   DATA    0C8H
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00AF          +1   121     EA      BIT     0AFH
   00AE          +1   122     EC      BIT     0AEH
   00AD          +1   123     ET2     BIT     0ADH
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     3
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     3
 
   00AC          +1   124     ES      BIT     0ACH
   00AB          +1   125     ET1     BIT     0ABH
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00BD          +1   187     CANIDT2         DATA    0BDH    
   00BE          +1   188     CANIDT3         DATA    0BEH    
   00BF          +1   189     CANIDT4         DATA    0BFH    
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     4
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     4
 
   00C1          +1   190     CANGIE          DATA    0C1H
   00C2          +1   191     CANIE1          DATA    0C2H    
@@ -231,7 +231,7 @@ LOC  OBJ            LINE     SOURCE
 001B                 215     ORG 001Bh
 001B 020257          216     LJMP mainISR ; timer 1
 002B                 217     ORG 002Bh
-002B 02028D          218     LJMP screenISR ; timer 2
+002B 020287          218     LJMP screenISR ; timer 2
                      219     
                      220     
 002E 758911          221     init:                                   MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1
@@ -242,581 +242,585 @@ LOC  OBJ            LINE     SOURCE
 003A 758BDB          225                                                     MOV TL1, #0DBh ;
 003D 75CDFB          226                                                     MOV TH2,#0FBh 
 0040 75CC8F          227                                                     MOV TL2,#08Fh 
-0043 D2A9            228                                                     SETB ET0 ; enable timer 0 interrupt
-0045 D2AB            229                                                     SETB ET1 ; enable timer 1 interrupt
-0047 D2AD            230                                                     SETB ET2 ; enable timer 2 interrupt
-0049 D2AA            231                                                     SETB EX1 ; enable external interrupt 1
-004B D2AF            232                                                     SETB EA ; enable int
-004D D28C            233                                                     SETB TR0 ; enable timer 0, 1, 2
-004F D28E            234                                                     SETB TR1
-0051 D2CA            235                                                     SETB TR2
-0053 7C34            236                                                     MOV R4, #00110100b ; 2 LSD 4 first = 4, 4 n
+0043 7C34            228                                                     MOV R4, #00110100b ; 2 LSD 4 first = 4, 4 n
                              ext = 3
-0055 7D12            237                                                     MOV R5, #00010010b ; 2 MSD 4 next = 2, 4 ne
+0045 7D12            229                                                     MOV R5, #00010010b ; 2 MSD 4 next = 2, 4 ne
                              xt = 1 => code is 1234
-0057 7800            238                                                     MOV R0, #00h
-0059 7E00            239                                                     MOV R6, #00h
-005B 75310F          240                                                     MOV 31h, #0Fh ; RAM byte addressable to sav
+0047 7800            230                                                     MOV R0, #00h
+0049 7E00            231                                                     MOV R6, #00h
+004B 75310F          232                                                     MOV 31h, #0Fh ; RAM byte addressable to sav
                              e previous state of keyboard (random initial value)
-005E 75320F          241                                                     MOV 32h, #0Fh ; RAM byte addressable to sto
+004E 75320F          233                                                     MOV 32h, #0Fh ; RAM byte addressable to sto
                              re temporarily "data pointer" for screen (random init value) 
-                     242                                                     
-0061 90037B          243                                                     MOV DPTR, #KeyUS ; init screen RAM 38h to 3
-                             Fh corresponds to the 8 blocks. 4 empty blocks and 4 UnderScore (for the password)
-0064 E0              244                                                     MOVX A, @DPTR
-0065 F538            245                                                     MOV 38h, A
-0067 F539            246                                                     MOV 39h, A
-0069 F53A            247                                                     MOV 3Ah, A
-006B F53B            248                                                     MOV 3Bh, A
-006D 900373          249                                                     MOV DPTR, #KeyEmpty
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     5
-
-0070 E0              250                                                     MOVX A, @DPTR
-0071 F53C            251                                                     MOV 3Ch, A
-0073 F53D            252                                                     MOV 3Dh, A
-0075 F53E            253                                                     MOV 3Eh, A
-0077 F53F            254                                                     MOV 3Fh, A
-                     255                                                     
-0079 C2C1            256                                                     CLR DATA_BITS
-007B C2C0            257                                                     CLR SHIFT
-007D C2B2            258                                                     CLR STORE
-007F D2D4            259                                                     SETB RS1 ; init some registers in register 
+                     234                                                     
+0051 753858          235                                                     MOV 38h, #88
+0054 753958          236                                                     MOV 39h, #88
+0057 753A58          237                                                     MOV 3Ah, #88
+005A 753B58          238                                                     MOV 3Bh, #88
+005D 753C50          239                                                     MOV 3Ch, #80
+0060 753D50          240                                                     MOV 3Dh, #80
+0063 753E50          241                                                     MOV 3Eh, #80
+0066 753F50          242                                                     MOV 3Fh, #80
+                     243                                                     
+0069 C2C1            244                                                     CLR DATA_BITS
+006B C2C0            245                                                     CLR SHIFT
+006D C2B2            246                                                     CLR STORE
+006F D2D4            247                                                     SETB RS1 ; init some registers in register 
                              bank (1,1) for screen
-0081 D2D3            260                                                     SETB RS0
-0083 7E00            261                                                     MOV R6, #0
-0085 E4              262                                                     CLR A
-0086 7D00            263                                                     MOV R5, #0
-0088 C2D4            264                                                     CLR RS1
-008A C2D3            265                                                     CLR RS0
+0071 D2D3            248                                                     SETB RS0
+0073 7E00            249                                                     MOV R6, #0
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     5
+
+0075 E4              250                                                     CLR A
+0076 7D00            251                                                     MOV R5, #0
+0078 C2D4            252                                                     CLR RS1
+007A C2D3            253                                                     CLR RS0
+007C D2A9            254                                                     SETB ET0 ; enable timer 0 interrupt
+007E D2AB            255                                                     SETB ET1 ; enable timer 1 interrupt
+0080 D2AD            256                                                     SETB ET2 ; enable timer 2 interrupt
+0082 D2AA            257                                                     SETB EX1 ; enable external interrupt 1
+0084 D2AF            258                                                     SETB EA ; enable int
+0086 D28C            259                                                     SETB TR0 ; enable timer 0, 1, 2
+0088 D28E            260                                                     SETB TR1
+008A D2CA            261                                                     SETB TR2
+                     262                                                     
+                     263     
+                     264     
+                     265     
                      266     
-                     267     
+008C 02008C          267     main:                                   LJMP main
                      268     
                      269     
-008C 02008C          270     main:                                   LJMP main
+                     270     
                      271     
-                     272     
-                     273     
-                     274     
-008F C0D0            275     keyboardISR:                    PUSH PSW ; review PSW, ACC and PUSH/POP !!!!
-0091 C0E0            276                                                     PUSH ACC
-0093 C2A3            277                                                     CLR P2.3 ; debug
-0095 75800F          278                                                     MOV P0,#00001111b
-                     279                                                     
-0098 30800C          280                                                     JNB P0.0, dichotomy00
-009B 308117          281                                                     JNB P0.1, dichotomy01
-009E 308222          282                                                     JNB P0.2, dichotomy02
-00A1 30832D          283                                                     JNB P0.3, dichotomy03
-00A4 0201BD          284                                                     LJMP nothing
-                     285                                                     
-00A7 C284            286     dichotomy00:                    CLR P0.4
-00A9 C285            287                                                     CLR P0.5
-00AB D286            288                                                     SETB P0.6
-00AD D287            289                                                     SETB P0.7
-00AF 30802D          290                                                     JNB P0.0, dichotomy00zero
-00B2 02011D          291                                                     LJMP dichotomy00one
-                     292                                                     
-00B5 C284            293     dichotomy01:                    CLR P0.4
-00B7 C285            294                                                     CLR P0.5
-00B9 D286            295                                                     SETB P0.6
-00BB D287            296                                                     SETB P0.7
-00BD 30812D          297                                                     JNB P0.1, dichotomy01zero
-00C0 02012B          298                                                     LJMP dichotomy01one
-                     299                                                     
-00C3 C284            300     dichotomy02:                    CLR P0.4
-00C5 C285            301                                                     CLR P0.5
-00C7 D286            302                                                     SETB P0.6
-00C9 D287            303                                                     SETB P0.7
-00CB 30822D          304                                                     JNB P0.2, dichotomy02zero
-00CE 020139          305                                                     LJMP dichotomy02one
-                     306     
-00D1 C284            307     dichotomy03:                    CLR P0.4
-00D3 C285            308                                                     CLR P0.5
-00D5 D286            309                                                     SETB P0.6
-00D7 D287            310                                                     SETB P0.7
-00D9 30832D          311                                                     JNB P0.3, dichotomy03zero
-00DC 02014D          312                                                     LJMP dichotomy03one
-                     313                                                     
-00DF C284            314     dichotomy00zero:                CLR P0.4
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     6
+008F C0D0            272     keyboardISR:                    PUSH PSW ; review PSW, ACC and PUSH/POP !!!!
+0091 C0E0            273                                                     PUSH ACC
+0093 C2A3            274                                                     CLR P2.3 ; debug
+0095 75800F          275                                                     MOV P0,#00001111b
+                     276                                                     
+0098 30800C          277                                                     JNB P0.0, dichotomy00
+009B 308117          278                                                     JNB P0.1, dichotomy01
+009E 308222          279                                                     JNB P0.2, dichotomy02
+00A1 30832D          280                                                     JNB P0.3, dichotomy03
+00A4 0201BD          281                                                     LJMP nothing
+                     282                                                     
+00A7 C284            283     dichotomy00:                    CLR P0.4
+00A9 C285            284                                                     CLR P0.5
+00AB D286            285                                                     SETB P0.6
+00AD D287            286                                                     SETB P0.7
+00AF 30802D          287                                                     JNB P0.0, dichotomy00zero
+00B2 02011D          288                                                     LJMP dichotomy00one
+                     289                                                     
+00B5 C284            290     dichotomy01:                    CLR P0.4
+00B7 C285            291                                                     CLR P0.5
+00B9 D286            292                                                     SETB P0.6
+00BB D287            293                                                     SETB P0.7
+00BD 30812D          294                                                     JNB P0.1, dichotomy01zero
+00C0 02012B          295                                                     LJMP dichotomy01one
+                     296                                                     
+00C3 C284            297     dichotomy02:                    CLR P0.4
+00C5 C285            298                                                     CLR P0.5
+00C7 D286            299                                                     SETB P0.6
+00C9 D287            300                                                     SETB P0.7
+00CB 30822D          301                                                     JNB P0.2, dichotomy02zero
+00CE 020139          302                                                     LJMP dichotomy02one
+                     303     
+00D1 C284            304     dichotomy03:                    CLR P0.4
+00D3 C285            305                                                     CLR P0.5
+00D5 D286            306                                                     SETB P0.6
+00D7 D287            307                                                     SETB P0.7
+00D9 30832D          308                                                     JNB P0.3, dichotomy03zero
+00DC 02014D          309                                                     LJMP dichotomy03one
+                     310                                                     
+00DF C284            311     dichotomy00zero:                CLR P0.4
+00E1 D285            312                                                     SETB P0.5
+00E3 C286            313                                                     CLR P0.6
+00E5 D287            314                                                     SETB P0.7
+00E7 30802D          315                                                     JNB P0.0, intermediateletterC
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     6
 
-00E1 D285            315                                                     SETB P0.5
-00E3 C286            316                                                     CLR P0.6
-00E5 D287            317                                                     SETB P0.7
-00E7 30802D          318                                                     JNB P0.0, intermediateletterC
-00EA 0201B4          319                                                     LJMP letterD
-                     320                                                     
-                     321                                                     
-00ED C284            322     dichotomy01zero:                CLR P0.4
-00EF D285            323                                                     SETB P0.5
-00F1 C286            324                                                     CLR P0.6
-00F3 D287            325                                                     SETB P0.7
-00F5 308122          326                                                     JNB P0.1, intermediateletterB
-00F8 020173          327                                                     LJMP three
-                     328                                                     
-00FB C284            329     dichotomy02zero:                CLR P0.4
-00FD D285            330                                                     SETB P0.5
-00FF C286            331                                                     CLR P0.6
-0101 D287            332                                                     SETB P0.7
-0103 308255          333                                                     JNB P0.2, zero
-0106 02016B          334                                                     LJMP two
-                     335                                                     
-0109 C284            336     dichotomy03zero:                CLR P0.4
-010B D285            337                                                     SETB P0.5
-010D C286            338                                                     CLR P0.6
-010F D287            339                                                     SETB P0.7
-0111 308333          340                                                     JNB P0.3, intermediateletterA
-0114 020163          341                                                     LJMP one
+00EA 0201B4          316                                                     LJMP letterD
+                     317                                                     
+                     318                                                     
+00ED C284            319     dichotomy01zero:                CLR P0.4
+00EF D285            320                                                     SETB P0.5
+00F1 C286            321                                                     CLR P0.6
+00F3 D287            322                                                     SETB P0.7
+00F5 308122          323                                                     JNB P0.1, intermediateletterB
+00F8 020173          324                                                     LJMP three
+                     325                                                     
+00FB C284            326     dichotomy02zero:                CLR P0.4
+00FD D285            327                                                     SETB P0.5
+00FF C286            328                                                     CLR P0.6
+0101 D287            329                                                     SETB P0.7
+0103 308255          330                                                     JNB P0.2, zero
+0106 02016B          331                                                     LJMP two
+                     332                                                     
+0109 C284            333     dichotomy03zero:                CLR P0.4
+010B D285            334                                                     SETB P0.5
+010D C286            335                                                     CLR P0.6
+010F D287            336                                                     SETB P0.7
+0111 308333          337                                                     JNB P0.3, intermediateletterA
+0114 020163          338                                                     LJMP one
+                     339     
+0117 0201B1          340     intermediateletterC:    LJMP letterC ; too long jump otherwise
+011A 0201AE          341     intermediateletterB:    LJMP letterB
                      342     
-0117 0201B1          343     intermediateletterC:    LJMP letterC ; too long jump otherwise
-011A 0201AE          344     intermediateletterB:    LJMP letterB
-                     345     
-011D C284            346     dichotomy00one:                 CLR P0.4
-011F D285            347                                                     SETB P0.5
-0121 C286            348                                                     CLR P0.6
-0123 D287            349                                                     SETB P0.7
-0125 308022          350                                                     JNB P0.0, intermediateletterE
-0128 0201BA          351                                                     LJMP letterF
-                     352                                                     
-012B C284            353     dichotomy01one:                 CLR P0.4
-012D D285            354                                                     SETB P0.5
-012F C286            355                                                     CLR P0.6
-0131 D287            356                                                     SETB P0.7
-0133 308155          357                                                     JNB P0.1, six
-0136 0201A3          358                                                     LJMP nine
-                     359                                                     
-0139 C284            360     dichotomy02one:                 CLR P0.4
-013B D285            361                                                     SETB P0.5
-013D C286            362                                                     CLR P0.6
-013F D287            363                                                     SETB P0.7
-0141 30823F          364                                                     JNB P0.2, five
-0144 02019B          365                                                     LJMP eight
+011D C284            343     dichotomy00one:                 CLR P0.4
+011F D285            344                                                     SETB P0.5
+0121 C286            345                                                     CLR P0.6
+0123 D287            346                                                     SETB P0.7
+0125 308022          347                                                     JNB P0.0, intermediateletterE
+0128 0201BA          348                                                     LJMP letterF
+                     349                                                     
+012B C284            350     dichotomy01one:                 CLR P0.4
+012D D285            351                                                     SETB P0.5
+012F C286            352                                                     CLR P0.6
+0131 D287            353                                                     SETB P0.7
+0133 308155          354                                                     JNB P0.1, six
+0136 0201A3          355                                                     LJMP nine
+                     356                                                     
+0139 C284            357     dichotomy02one:                 CLR P0.4
+013B D285            358                                                     SETB P0.5
+013D C286            359                                                     CLR P0.6
+013F D287            360                                                     SETB P0.7
+0141 30823F          361                                                     JNB P0.2, five
+0144 02019B          362                                                     LJMP eight
+                     363     
+0147 0201AB          364     intermediateletterA:    LJMP letterA ; too long jump otherwise
+014A 0201B7          365     intermediateletterE:    LJMP letterE
                      366     
-0147 0201AB          367     intermediateletterA:    LJMP letterA ; too long jump otherwise
-014A 0201B7          368     intermediateletterE:    LJMP letterE
-                     369     
-014D C284            370     dichotomy03one:                 CLR P0.4
-014F D285            371                                                     SETB P0.5
-0151 C286            372                                                     CLR P0.6
-0153 D287            373                                                     SETB P0.7
-0155 308323          374                                                     JNB P0.3, four
-0158 020193          375                                                     LJMP seven
-                     376                                                     
-015B 7900            377     zero:                                   MOV R1, #00h
-015D 753200          378                                                     MOV 32h, #0 
-0160 0201C3          379                                                     LJMP entercode
-0163 7901            380     one:                                    MOV R1, #01h
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     7
+014D C284            367     dichotomy03one:                 CLR P0.4
+014F D285            368                                                     SETB P0.5
+0151 C286            369                                                     CLR P0.6
+0153 D287            370                                                     SETB P0.7
+0155 308323          371                                                     JNB P0.3, four
+0158 020193          372                                                     LJMP seven
+                     373                                                     
+015B 7900            374     zero:                                   MOV R1, #00h
+015D 753200          375                                                     MOV 32h, #0 ; each code block has 8 lines s
+                             o if we want key0, we start from key0+0, if key1 : key0+8 and so on
+0160 0201C3          376                                                     LJMP entercode
+0163 7901            377     one:                                    MOV R1, #01h
+0165 753208          378                                                     MOV 32h, #8
+0168 0201C3          379                                                     LJMP entercode
+016B 7902            380     two:                                    MOV R1, #02h
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     7
 
-0165 753208          381                                                     MOV 32h, #8
-0168 0201C3          382                                                     LJMP entercode
-016B 7902            383     two:                                    MOV R1, #02h
-016D 753210          384                                                     MOV 32h, #16
-0170 0201C3          385                                                     LJMP entercode
-0173 7903            386     three:                                  MOV R1, #03h
-0175 753218          387                                                     MOV 32h, #24
-0178 0201C3          388                                                     LJMP entercode
-017B 7904            389     four:                                   MOV R1, #04h
-017D 753220          390                                                     MOV 32h, #32
-0180 0201C3          391                                                     LJMP entercode
-0183 7905            392     five:                                   MOV R1, #05h
-0185 753228          393                                                     MOV 32h, #40
-0188 0201C3          394                                                     LJMP entercode
-018B 7906            395     six:                                    MOV R1, #06h
-018D 753230          396                                                     MOV 32h, #48
-0190 0201C3          397                                                     LJMP entercode
-0193 7907            398     seven:                                  MOV R1, #07h
-0195 753238          399                                                     MOV 32h, #56
-0198 0201C3          400                                                     LJMP entercode
-019B 7908            401     eight:                                  MOV R1, #08h
-019D 753222          402                                                     MOV 32h, #34
-01A0 0201C3          403                                                     LJMP entercode
-01A3 7909            404     nine:                                   MOV R1, #09h
-01A5 753248          405                                                     MOV 32h, #72
-01A8 0201C3          406                                                     LJMP entercode
-01AB 020238          407     letterA:                                LJMP endKeyboardISR
-01AE 020238          408     letterB:                                LJMP endKeyboardISR
-01B1 020223          409     letterC:                                LJMP clearcode
-01B4 020238          410     letterD:                                LJMP endKeyboardISR
-01B7 020238          411     letterE:                                LJMP endKeyboardISR
-01BA 020238          412     letterF:                                LJMP endKeyboardISR
-01BD 75310F          413     nothing:                                MOV 31h,#0Fh
-01C0 020238          414                                                     LJMP endKeyboardISR
-                     415     
-01C3 E531            416     entercode:                              MOV A,31h
-01C5 B40F70          417                                                     CJNE A,#0Fh, endKeyboardISR
-01C8 0201CB          418                                                     LJMP continue
-01CB E9              419     continue:                               MOV A, R1
-01CC F531            420                                                     MOV 31h, A
-01CE B80007          421                                                     CJNE R0, #00h, code2 ;if counter of pressed
-                              button is 0 its the first number of the code
-01D1 E532            422                                                     MOV A, 32h
-01D3 F53B            423                                                     MOV 3Bh, A
-01D5 E9              424                                                     MOV  A, R1
-01D6 C4              425                                                     SWAP A
-01D7 FB              426                                                     MOV  R3, A
-01D8 B80107          427     code2:                                  CJNE R0, #01h, code3
-01DB E532            428                                                     MOV A, 32h
-01DD F53A            429                                                     MOV 3Ah, A
-01DF E9              430                                                     MOV  A, R1                      ;second num
+016D 753210          381                                                     MOV 32h, #16
+0170 0201C3          382                                                     LJMP entercode
+0173 7903            383     three:                                  MOV R1, #03h
+0175 753218          384                                                     MOV 32h, #24
+0178 0201C3          385                                                     LJMP entercode
+017B 7904            386     four:                                   MOV R1, #04h
+017D 753220          387                                                     MOV 32h, #32
+0180 0201C3          388                                                     LJMP entercode
+0183 7905            389     five:                                   MOV R1, #05h
+0185 753228          390                                                     MOV 32h, #40
+0188 0201C3          391                                                     LJMP entercode
+018B 7906            392     six:                                    MOV R1, #06h
+018D 753230          393                                                     MOV 32h, #48
+0190 0201C3          394                                                     LJMP entercode
+0193 7907            395     seven:                                  MOV R1, #07h
+0195 753238          396                                                     MOV 32h, #56
+0198 0201C3          397                                                     LJMP entercode
+019B 7908            398     eight:                                  MOV R1, #08h
+019D 753222          399                                                     MOV 32h, #34
+01A0 0201C3          400                                                     LJMP entercode
+01A3 7909            401     nine:                                   MOV R1, #09h
+01A5 753248          402                                                     MOV 32h, #72
+01A8 0201C3          403                                                     LJMP entercode
+01AB 020238          404     letterA:                                LJMP endKeyboardISR
+01AE 020238          405     letterB:                                LJMP endKeyboardISR
+01B1 020223          406     letterC:                                LJMP clearcode
+01B4 020238          407     letterD:                                LJMP endKeyboardISR
+01B7 020238          408     letterE:                                LJMP endKeyboardISR
+01BA 020238          409     letterF:                                LJMP endKeyboardISR
+01BD 75310F          410     nothing:                                MOV 31h,#0Fh ; if no button pressed : set the store
+                             d value at a random value 0Fh
+01C0 020238          411                                                     LJMP endKeyboardISR
+                     412     
+01C3 E531            413     entercode:                              MOV A,31h
+01C5 B40F70          414                                                     CJNE A,#0Fh, endKeyboardISR ; the stored va
+                             lue in 31h is used to debounce the keyboard
+01C8 0201CB          415                                                     LJMP continue
+01CB E9              416     continue:                               MOV A, R1
+01CC F531            417                                                     MOV 31h, A
+01CE B80007          418                                                     CJNE R0, #00h, code2 ;if counter of pressed
+                              button (R0) is 0 its the first number of the code, else go to code2(second number)
+01D1 E532            419                                                     MOV A, 32h                       ;code stor
+                             ed on 2 registers. we use SWAP function to do this well. If code is 1234 : R3 : 00010010 (1,2)
+01D3 F53B            420                                                     MOV 3Bh, A                       ;         
+                                                                                                                        
+                                                                                                 R4 : 00110100 (3,4)
+01D5 E9              421                                                     MOV  A, R1
+01D6 C4              422                                                     SWAP A
+01D7 FB              423                                                     MOV  R3, A
+01D8 B80107          424     code2:                                  CJNE R0, #01h, code3
+01DB E532            425                                                     MOV A, 32h
+01DD F53A            426                                                     MOV 3Ah, A
+01DF E9              427                                                     MOV  A, R1                      ;second num
                              ber of the code
-01E0 2B              431                                                     ADD  A, R3
-01E1 FB              432                                                     MOV  R3, A
-01E2 B80207          433     code3:                                  CJNE R0, #02h, code4
-01E5 E532            434                                                     MOV A, 32h
-01E7 F539            435                                                     MOV 39h, A
-01E9 E9              436                                                     MOV  A, R1                      ;third
-01EA C4              437                                                     SWAP A
-01EB FA              438                                                     MOV  R2, A
-01EC B8030A          439     code4:                                  CJNE R0, #03h, incR0
-01EF E532            440                                                     MOV A, 32h
-01F1 F538            441                                                     MOV 38h, A
-01F3 E9              442                                                     MOV  A, R1                      ;fourth
-01F4 2A              443                                                     ADD  A, R2
-01F5 FA              444                                                     MOV  R2, A
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     8
+01E0 2B              428                                                     ADD  A, R3
+01E1 FB              429                                                     MOV  R3, A
+01E2 B80207          430     code3:                                  CJNE R0, #02h, code4
+01E5 E532            431                                                     MOV A, 32h
+01E7 F539            432                                                     MOV 39h, A
+01E9 E9              433                                                     MOV  A, R1                      ;third
+01EA C4              434                                                     SWAP A
+01EB FA              435                                                     MOV  R2, A
+01EC B8030A          436     code4:                                  CJNE R0, #03h, incR0
+01EF E532            437                                                     MOV A, 32h
+01F1 F538            438                                                     MOV 38h, A
+01F3 E9              439                                                     MOV  A, R1                      ;fourth
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     8
 
-01F6 0201FD          445                                                     LJMP checkCode
-01F9 08              446     incR0:                                  INC R0
-01FA 020238          447                                                     LJMP endKeyboardISR
-                     448     
-01FD 7800            449     checkCode:                              MOV R0, #00h
-01FF EC              450                                                     MOV A,R4
-0200 6A              451                                                     XRL A,R2
-0201 F4              452                                                     CPL A    ;XNOR to check that R4 and R2 are 
+01F4 2A              440                                                     ADD  A, R2
+01F5 FA              441                                                     MOV  R2, A
+01F6 0201FD          442                                                     LJMP checkCode
+01F9 08              443     incR0:                                  INC R0                          ; increment the cou
+                             nter of button pressed
+01FA 020238          444                                                     LJMP endKeyboardISR
+                     445     
+01FD 7800            446     checkCode:                              MOV R0, #00h
+01FF EC              447                                                     MOV A,R4
+0200 6A              448                                                     XRL A,R2
+0201 F4              449                                                     CPL A    ;XNOR to check that R4 and R2 are 
                              the same (if 11111111b)
-0202 B4FF1B          453                                                     CJNE A, #0FFh, wrong ;check if code == main
-                              code
-0205 ED              454                                                     MOV A,R5
-0206 6B              455                                                     XRL A,R3
-0207 F4              456                                                     CPL A
-0208 B4FF15          457                                                     CJNE A, #0FFh, wrong
-020B C2A4            458                                                     CLR P2.4 ;debug only
-020D BE0007          459                                                     CJNE R6, #00h, desactivate ; if alarm is sc
-                             reaming
-0210 7E01            460                                                     MOV R6, #01h ; we shut the alarm up but sti
-                             ll activated
-0212 7FE1            461                                                     MOV R7, #0E1h ; put 15 seconds in the count
-                             er before prealarm => alarm (counter at 225 with 15Hz) 
-0214 020238          462                                                     LJMP endKeyboardISR
-                     463                                                     
-0217 7E00            464     desactivate:                    MOV R6, #00h
-0219 7F00            465                                                     MOV R7, #00h ; reset the counter if the ala
+0202 B4FF1B          450                                                     CJNE A, #0FFh, wrong ;check if code == main
+                              code otherwise wrong
+0205 ED              451                                                     MOV A,R5
+0206 6B              452                                                     XRL A,R3 ;same XNOR for R3,R5
+0207 F4              453                                                     CPL A
+0208 B4FF15          454                                                     CJNE A, #0FFh, wrong
+020B C2A4            455                                                     CLR P2.4 ;debug only
+020D BE0007          456                                                     CJNE R6, #00h, desactivate ; if alarm activ
+                             ated, desactivate it
+0210 7E01            457                                                     MOV R6, #01h ; otherwise, activate it (prea
+                             larm before actually set on)
+0212 7FE1            458                                                     MOV R7, #0E1h ; put 15 seconds of period in
+                              the counter before prealarm => alarm (counter at 225 with 15Hz) 
+0214 020238          459                                                     LJMP endKeyboardISR
+                     460                                                     
+0217 7E00            461     desactivate:                    MOV R6, #00h
+0219 7F00            462                                                     MOV R7, #00h ; reset the counter if the ala
                              rm is desactivate
-021B D2A3            466                                                     SETB P2.3
-021D 020238          467                                                     LJMP endKeyboardISR
-                     468                                                     
-0220                 469     wrong:                                  ; screen
-0220 020223          470                                                     LJMP clearcode
-                     471     
-0223 7A00            472     clearcode:                              MOV R2, #00h
-0225 7B00            473                                                     MOV R3, #00h
-0227 7800            474                                                     MOV R0, #00h
-0229 90037B          475                                                     MOV DPTR, #KeyUS
-022C E0              476                                                     MOVX A, @DPTR
-022D F53B            477                                                     MOV 3Bh, A
-022F F53A            478                                                     MOV 3Ah, A
-0231 F539            479                                                     MOV 39h, A
-0233 F538            480                                                     MOV 38h, A
-0235 020238          481                                                     LJMP endKeyboardISR
-                     482                                                     
-0238 758D0B          483     endKeyboardISR:                 MOV TH1,#0Bh 
-023B 758BDB          484                                                     MOV TL1,#0DBh 
-023E D0E0            485                                                     POP ACC
-0240 D0D0            486                                                     POP PSW
-0242 32              487                                                     RETI                                       
+021B D2A3            463                                                     SETB P2.3 ;debug
+021D 020238          464                                                     LJMP endKeyboardISR
+                     465                                                     
+0220                 466     wrong:                                  ; SHOW WITH SCREEN OR LED ITS WRONG
+0220 020223          467                                                     LJMP clearcode
+                     468     
+0223 7A00            469     clearcode:                              MOV R2, #00h
+0225 7B00            470                                                     MOV R3, #00h
+0227 7800            471                                                     MOV R0, #00h
+0229 900379          472                                                     MOV DPTR, #KeyUS ; reset screen data
+022C E0              473                                                     MOVX A, @DPTR
+022D F53B            474                                                     MOV 3Bh, A
+022F F53A            475                                                     MOV 3Ah, A
+0231 F539            476                                                     MOV 39h, A
+0233 F538            477                                                     MOV 38h, A
+0235 020238          478                                                     LJMP endKeyboardISR
+                     479                                                     
+0238 758D0B          480     endKeyboardISR:                 MOV TH1,#0Bh 
+023B 758BDB          481                                                     MOV TL1,#0DBh 
+023E D0E0            482                                                     POP ACC
+0240 D0D0            483                                                     POP PSW
+0242 32              484                                                     RETI                                       
                                   
-                     488     
-                     489     
-                     490     
-0243 C0D0            491     extISR:                                 PUSH PSW
-0245 C0E0            492                                                     PUSH ACC
-0247 BE0108          493                                                     CJNE R6, #01h, endExtISR ;if alarm is not O
+                     485     
+                     486     
+                     487     
+0243 C0D0            488     extISR:                                 PUSH PSW ; STILL HAVE TO TEST PIR SENSOR AND CONFIG
+                             URE THE ISR CORRECTLY
+0245 C0E0            489                                                     PUSH ACC
+0247 BE0108          490                                                     CJNE R6, #01h, endExtISR ;if alarm is not O
                              FF : end
-024A 02024D          494                                                     LJMP detection
-                     495     
-024D 7FE1            496     detection:                              MOV R7, #0E1h ; set counter to 225 to go to 15s
-024F 020252          497                                                     LJMP endExtISR
-                     498                                                     
-0252 D0E0            499     endExtISR:                              POP ACC
-0254 D0D0            500                                                     POP PSW
-0256 32              501                                                     RETI
+024A 02024D          491                                                     LJMP detection
+                     492     
+024D 7FE1            493     detection:                              MOV R7, #0E1h ; set counter to 225 to go to 15s
+024F 020252          494                                                     LJMP endExtISR
+                     495                                                     
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE     9
+
+0252 D0E0            496     endExtISR:                              POP ACC
+0254 D0D0            497                                                     POP PSW
+0256 32              498                                                     RETI
+                     499     
+                     500     
+                     501     
                      502     
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE     9
-
-                     503     
-                     504     
-                     505     
-0257 C0D0            506     mainISR:                                PUSH PSW
-0259 C0E0            507                                                     PUSH ACC
-025B BE0003          508                                                     CJNE R6, #00h, next ; alarm is not activate
+0257 C0D0            503     mainISR:                                PUSH PSW
+0259 C0E0            504                                                     PUSH ACC
+025B BE0003          505                                                     CJNE R6, #00h, next ; alarm is not activate
                              d : end otherwise next
-025E 020282          509                                                     LJMP endMainISR
-0261 D2A4            510     next:                                   SETB P2.4
-0263 DF1D            511                                                     DJNZ R7, endMainISR ; normally screen !
-0265 C2A3            512                                                     CLR P2.3 ; flashing led
-0267 BE010C          513                                                     CJNE R6, #01h, scream ; if not pre alarm it
-                              is pre alert and we can start SKRIMIN
-026A BE0303          514                                                     CJNE R6, #03h, activation ; it is prealarm 
-                             so activate alarm system
-026D 020282          515                                                     LJMP endMainISR
-                     516                                                     
-0270 0E              517     activation:                             INC R6
-0271 C2A4            518                                                     CLR P2.4 ; led shows alarm is on
-0273 020282          519                                                     LJMP endMainISR
-                     520                                                     
-0276 0E              521     scream:                                 INC R6
-0277 B2A2            522                                                     CPL P2.2 ; change state of buzzer
-0279 758CFB          523                                                     MOV TH0, #0FBh ; freq at 440
-027C 758A8F          524                                                     MOV TL0, #08Fh
-027F 020282          525                                                     LJMP endMainISR
-                     526                                             
-                     527     
-0282 758CFB          528     endMainISR:                             MOV TH0,#0FBh ; MSB set 880Hz of timer 0 
-0285 758A8F          529                                                     MOV TL0,#08Fh ; LSB same  for LSB
-0288 D0E0            530                                                     POP ACC
-028A D0D0            531                                                     POP PSW
-028C 32              532                                                     RETI
-                     533     
-                     534     
-                     535                             
-                     536                             
-028D C0D0            537     screenISR:                              PUSH PSW
-028F C0E0            538                                                     PUSH ACC
-0291 D2D4            539                                                     SETB RS1
-0293 D2D3            540                                                     SETB RS0
-0295 C2C1            541                                                     CLR DATA_BITS
-0297 C2C0            542                                                     CLR SHIFT
-0299 C2B2            543                                                     CLR STORE
-029B C2A3            544                                                     CLR P2.3
-029D ED              545                                                     MOV A,R5
-029E 9D              546                                                     SUBB A, R5; number of empty block
-029F FC              547                                                     MOV R4,A
-                     548                                                     
-02A0 900373          549                                                     MOV DPTR, #KeyEmpty
-                     550                                                     
-02A3 BC0003          551                                                     CJNE R4, #0, loop4a
-02A6 0202BF          552                                                     LJMP skip
-                     553     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
-02A9 EE              554     loop4a:                                 MOV A, R6 ; R6 is an index for the used row
-02AA B40704          555                                                     CJNE A,#7, column_dispa ; reset row index w
+025E 02027C          506                                                     LJMP endMainISR
+0261 D2A4            507     next:                                   SETB P2.4 ; debug
+0263 DF17            508                                                     DJNZ R7, endMainISR ; 15s decounting. norma
+                             lly screen ! (?? what ? why screen ?)
+0265 B2A3            509                                                     CPL P2.3 ; flashing led
+0267 BE010C          510                                                     CJNE R6, #01h, scream ; if not pre alarm it
+                              is pre alert and after 15s we can start SKRIMIN
+026A BE0303          511                                                     CJNE R6, #03h, activation ; it is prealarm 
+                             so activate alarm system after 15sc
+026D 02027C          512                                                     LJMP endMainISR
+                     513                                                     
+0270 0E              514     activation:                             INC R6 ;prealarm mode to alarm mode
+0271 C2A4            515                                                     CLR P2.4 ; led shows alarm is on
+0273 02027C          516                                                     LJMP endMainISR
+                     517                                                     
+0276 0E              518     scream:                                 INC R6 ;prealert mode to alert mode
+0277 B2A2            519                                                     CPL P2.2 ; change state of buzzer
+0279 02027C          520                                                     LJMP endMainISR
+                     521                                             
+                     522     
+027C 758CFB          523     endMainISR:                             MOV TH0,#0FBh ; MSB set 880Hz of timer 0 
+027F 758A8F          524                                                     MOV TL0,#08Fh ; LSB same  for LSB
+0282 D0E0            525                                                     POP ACC
+0284 D0D0            526                                                     POP PSW
+0286 32              527                                                     RETI
+                     528     
+                     529     
+                     530                             
+                     531                             
+0287 C0D0            532     screenISR:                              PUSH PSW
+0289 C0E0            533                                                     PUSH ACC
+028B D2D4            534                                                     SETB RS1
+028D D2D3            535                                                     SETB RS0
+028F C2C1            536                                                     CLR DATA_BITS
+0291 C2C0            537                                                     CLR SHIFT
+0293 C2B2            538                                                     CLR STORE
+0295 C2A3            539                                                     CLR P2.3
+0297 ED              540                                                     MOV A,R5 ; init = 0, its index of the block
+                              we are dealing with
+                     541                                                     ;SUBB A, #1; WATT ? R5 - R5 = 0 -> somethin
+                             g wrong, should delete this line right?
+0298 FC              542                                                     MOV R4,A
+                     543                                                     
+0299 900371          544                                                     MOV DPTR, #KeyEmpty ; first some empty bloc
+                             ks 
+                     545                                                     
+029C BC0003          546                                                     CJNE R4, #0, loop4a ; if R4 = 0 skip this l
+                             oop !
+029F 0202B8          547                                                     LJMP skip
+                     548                                                     ; loop on number of repeated pattern
+02A2 EE              549     loop4a:                                 MOV A, R6 ; R6 is an index for the used row
+02A3 B40704          550                                                     CJNE A,#7, column_dispa ; reset row index w
                              hen complete
-02AD 7400            556     reseta:                                 MOV A, #0
-02AF 7E00            557                                                     MOV R6, #0
-                     558                                                     
-02B1 93              559     column_dispa:                   MOVC A, @A+DPTR
-02B2 7B05            560                                                     MOV R3, #5
-                     561     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
-02B4 13              562     loop3a:                                 RRC A ;right shift
-02B5 92C1            563                                                     MOV DATA_BITS,C ;carry of the right shift i
-                             n data output for display
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    10
+02A6 7400            551     reseta:                                 MOV A, #0
+02A8 7E00            552                                                     MOV R6, #0
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    10
 
-02B7 C2C0            564                                                     CLR SHIFT ;shift register
-02B9 D2C0            565                                                     SETB SHIFT
-02BB DBF7            566                                                     DJNZ R3, loop3a
-                     567                                                     
-02BD DCEA            568                                                     DJNZ R4, loop4a
-                     569                                                     
-                     570                                                     
-02BF 900323          571     skip:                                   MOV DPTR, #Key0 ;start index at Key0
-                     572                                                     ;MOV R4, #1 ; repeat pattern N times NO NEE
+                     553                                                     
+02AA 93              554     column_dispa:                   MOVC A, @A+DPTR
+02AB 7B05            555                                                     MOV R3, #5
+                     556                                                     ;each column bit (one by one)
+02AD 13              557     loop3a:                                 RRC A ;right shift
+02AE 92C1            558                                                     MOV DATA_BITS,C ;carry of the right shift i
+                             n data output for display
+02B0 C2C0            559                                                     CLR SHIFT ;shift register
+02B2 D2C0            560                                                     SETB SHIFT
+02B4 DBF7            561                                                     DJNZ R3, loop3a
+                     562                                                     
+02B6 DCEA            563                                                     DJNZ R4, loop4a
+                     564                                                     
+                     565                                                     ;now display the wanted value 
+02B8 900321          566     skip:                                   MOV DPTR, #Key0 ;start index at Key0
+                     567                                                     ;MOV R4, #1 ; repeat pattern N times NO NEE
                              D
-                     573     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
-02C2 EE              574     loop4b:                                 MOV A, R6 ; R6 is an index for the used row
-02C3 B40705          575                                                     CJNE A,#7, column_dispb ; reset row index w
+                     568                                                     ; number of repeated pattern
+02BB EE              569     loop4b:                                 MOV A, R6 ; R6 is an index for the used row
+02BC B40704          570                                                     CJNE A,#7, column_dispb ; reset row index w
                              hen complete
-02C6 E538            576     resetb:                                 MOV A, 38h ;load index to get the good key if 38h =
-                              16, Key0 index + 16 = Key2
-02C8 2D              577                                                     ADD A, R5
-02C9 7E00            578                                                     MOV R6, #0
-                     579                                                     
-02CB 93              580     column_dispb:                   MOVC A, @A+DPTR
-02CC 7B05            581                                                     MOV R3, #5
-                     582     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
-02CE 13              583     loop3b:                                 RRC A ;right shift
-02CF 92C1            584                                                     MOV DATA_BITS,C ;carry of the right shift i
+02BF 7E00            571     resetb:                                 MOV R6, #0
+02C1 7400            572                                                     MOV A, #0
+02C3 2538            573     column_dispb:                   ADD A, 38h
+02C5 93              574                                                     MOVC A, @A+DPTR
+02C6 7B05            575                                                     MOV R3, #5
+                     576                                                     ;each column bit (one by one)
+02C8 13              577     loop3b:                                 RRC A ;right shift
+02C9 92C1            578                                                     MOV DATA_BITS,C ;carry of the right shift i
                              n data output for display
-02D1 C2C0            585                                                     CLR SHIFT ;shift register
-02D3 D2C0            586                                                     SETB SHIFT
-02D5 DBF7            587                                                     DJNZ R3, loop3b
-                     588                                                     
-                     589                                                     ;DJNZ R4, loop4b NO NEED
-                     590                                                     
-02D7 7408            591                                                     MOV A, #08
-02D9 9D              592                                                     SUBB A,R5  ; number of empty block at left 
-                             : 8 - position of current block
-02DA FC              593                                                     MOV R4,A
-                     594                                                     
-02DB 900373          595                                                     MOV DPTR, #KeyEmpty
-                     596                                                     
-                     597     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
-02DE EE              598     loop4c:                                 MOV A, R6 ; R6 is an index for the used row
-02DF B40704          599                                                     CJNE A,#7, column_dispc ; reset row index w
+02CB C2C0            579                                                     CLR SHIFT ;shift register
+02CD D2C0            580                                                     SETB SHIFT
+02CF DBF7            581                                                     DJNZ R3, loop3b
+                     582     
+                     583                                                     ;DJNZ R4, loop4b NO NEED
+                     584     
+02D1 7408            585                                                     MOV A, #8
+02D3 9D              586                                                     SUBB A,R5  ; number of empty block at left:
+                              8 : MUST BE CHANGED
+02D4 FC              587                                                     MOV R4,A
+02D5 900371          588                                                     MOV DPTR, #KeyEmpty
+                     589     
+                     590                                                     ; number of repeated pattern
+02D8 EE              591     loop4c:                                 MOV A, R6 ; R6 is an index for the used row
+02D9 B40704          592                                                     CJNE A,#7, column_dispc ; reset row index w
                              hen complete
-02E2 7400            600     resetc:                                 MOV A, #0
-02E4 7E00            601                                                     MOV R6, #0
-                     602                                                     
-02E6 93              603     column_dispc:                   MOVC A, @A+DPTR
-02E7 7B05            604                                                     MOV R3, #5
-                     605     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
-02E9 13              606     loop3c:                                 RRC A ;right shift
-02EA 92C1            607                                                     MOV DATA_BITS,C ;carry of the right shift i
+02DC 7400            593     resetc:                                 MOV A, #0
+02DE 7E00            594                                                     MOV R6, #0
+                     595                                                     
+02E0 93              596     column_dispc:                   MOVC A, @A+DPTR
+02E1 7B05            597                                                     MOV R3, #5
+                     598                                                     ;each column bit (one by one)
+02E3 13              599     loop3c:                                 RRC A ;right shift
+02E4 92C1            600                                                     MOV DATA_BITS,C ;carry of the right shift i
                              n data output for display
-02EC C2C0            608                                                     CLR SHIFT ;shift register
-02EE D2C0            609                                                     SETB SHIFT
-02F0 DBF7            610                                                     DJNZ R3, loop3c
-                     611     
-02F2 DCEA            612                                                     DJNZ R4, loop4c
+02E6 C2C0            601                                                     CLR SHIFT ;shift register
+02E8 D2C0            602                                                     SETB SHIFT
+02EA DBF7            603                                                     DJNZ R3, loop3c
+                     604     
+02EC DCEA            605                                                     DJNZ R4, loop4c
+                     606     
+                     607     
+                     608     
+                     609                                                     ;loop on the lines
+02EE 90031A          610                                                     MOV DPTR, #lines
+02F1 EE              611                                                     MOV A, R6
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    11
+
+02F2 93              612                                                     MOVC A, @A+DPTR
                      613     
-                     614     
-                     615     
-                     616     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;lines
-02F4 90031C          617                                                     MOV DPTR, #lines
-02F7 EE              618                                                     MOV A, R6
-02F8 93              619                                                     MOVC A, @A+DPTR
-                     620     
-02F9 7A08            621                                                     MOV R2, #8
-02FB 13              622     loop2:                                  RRC A
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    11
-
-02FC 92C1            623                                                     MOV DATA_BITS,C ;carry of the right shift i
+02F3 7A08            614                                                     MOV R2, #8
+02F5 13              615     loop2:                                  RRC A
+02F6 92C1            616                                                     MOV DATA_BITS,C ;carry of the right shift i
                              n data output for display
-02FE C2C0            624                                                     CLR SHIFT ;shift register
-0300 D2C0            625                                                     SETB SHIFT
-0302 DAF7            626                                                     DJNZ R2,loop2
-                     627     
-0304 C2B2            628                                                     CLR STORE 
-0306 D2B2            629                                                     SETB STORE ; store
-0308 C2B2            630                                                     CLR STORE
-                     631     
-030A 0E              632                                                     INC R6
-                     633                                                     ;CLR RS1
-030B 0D              634                                                     INC R5; increment the counter of Blocks 
-030C BD0802          635                                                     CJNE R5, #8, endScreenISR
-030F 7D00            636                                                     MOV R5, #0      
-                     637                                                     ; TIMER RESETTING
+02F8 C2C0            617                                                     CLR SHIFT ;shift register
+02FA D2C0            618                                                     SETB SHIFT
+02FC DAF7            619                                                     DJNZ R2,loop2
+                     620     
+02FE C2B2            621                                                     CLR STORE 
+0300 D2B2            622                                                     SETB STORE ; store
+0302 C2B2            623                                                     CLR STORE
+                     624     
+0304 0E              625                                                     INC R6
+0305 0D              626                                                     INC R5; increment the counter of Blocks 
+0306 BD0802          627                                                     CJNE R5, #8, endScreenISR
+0309 7D00            628                                                     MOV R5, #0      
+                     629                                                     
+030B                 630     endScreenISR:                   
+030B C2D3            631                                                     CLR RS0
+030D C2D4            632                                                     CLR RS1
+030F 758CFF          633                                                     MOV TH0,#0FFh
+0312 758AFF          634                                                     MOV TL0,#0FFh
+0315 D0E0            635                                                     POP ACC
+0317 D0D0            636                                                     POP PSW
+0319 32              637                                                     RETI            
                      638     
-0311                 639     endScreenISR:                   
-0311 C2D3            640                                                     CLR RS0
-0313 C2D4            641                                                     CLR RS1
-0315 758CFF          642                                                     MOV TH0,#0FFh
-0318 758AFF          643                                                     MOV TL0,#0FFh
-031B 32              644                                                     RETI            
-                     645     
-                     646     
-                     647     ;Functions
-                     648     
-                     649     ;Code Memory Data
-                     650     
-031C 7F              651     lines:          DB      01111111b ; pattern to easily follow lines
-031D BF              652                             DB      10111111b
-031E DF              653                             DB      11011111b
-031F EF              654                             DB      11101111b
-0320 F7              655                             DB      11110111b
-0321 FB              656                             DB      11111011b
-0322 FD              657                             DB      11111101b
-0323 10              658     Key0:           DB 10000b
-0324 16              659                             DB 10110b
-0325 16              660                             DB 10110b
-0326 16              661                             DB 10110b
-0327 16              662                             DB 10110b
-0328 16              663                             DB 10110b
-0329 10              664                             DB 10000b
-032A 00              665                             DB 00000b
-032B 1D              666     Key1:           DB 11101b
-032C 19              667                             DB 11001b
-032D 1D              668                             DB 11101b
-032E 1D              669                             DB 11101b
-032F 1D              670                             DB 11101b
-0330 1D              671                             DB 11101b
-0331 18              672                             DB 11000b
-0332 00              673                             DB 00000b
-0333 10              674     Key2:           DB 10000b
-0334 1E              675                             DB 11110b
-0335 1E              676                             DB 11110b
-0336 10              677                             DB 10000b
-0337 17              678                             DB 10111b
-0338 17              679                             DB 10111b
-0339 10              680                             DB 10000b
-033A 00              681                             DB 00000b
-033B 10              682     Key3:           DB 10000b
-033C 1E              683                             DB 11110b
-033D 1E              684                             DB 11110b
-033E 10              685                             DB 10000b
-033F 1E              686                             DB 11110b
-0340 1E              687                             DB 11110b
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    12
+                     639     
+                     640     ;Functions
+                     641     
+                     642     ;Code Memory Data
+                     643     
+031A 7F              644     lines:          DB 01111111b ; pattern to easily follow lines
+031B BF              645                             DB 10111111b
+031C DF              646                             DB 11011111b
+031D EF              647                             DB 11101111b
+031E F7              648                             DB 11110111b
+031F FB              649                             DB 11111011b
+0320 FD              650                             DB 11111101b
+0321 19              651     Key0:           DB 11001b
+0322 16              652                             DB 10110b
+0323 16              653                             DB 10110b
+0324 16              654                             DB 10110b
+0325 16              655                             DB 10110b
+0326 16              656                             DB 10110b
+0327 19              657                             DB 11001b
+0328 00              658                             DB 00000b
+0329 1D              659     Key1:           DB 11101b
+032A 19              660                             DB 11001b
+032B 1D              661                             DB 11101b
+032C 1D              662                             DB 11101b
+032D 1D              663                             DB 11101b
+032E 1D              664                             DB 11101b
+032F 18              665                             DB 11000b
+0330 00              666                             DB 00000b
+0331 19              667     Key2:           DB 11001b
+0332 16              668                             DB 10110b
+0333 1E              669                             DB 11110b
+0334 19              670                             DB 11001b
+0335 17              671                             DB 10111b
+0336 16              672                             DB 10110b
+0337 19              673                             DB 11001b
+0338 00              674                             DB 00000b
+0339 19              675     Key3:           DB 11001b
+033A 16              676                             DB 10110b
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    12
 
-0341 10              688                             DB 10000b
-0342 00              689                             DB 00000b
-0343 1D              690     Key4:           DB 11101b
-0344 19              691                             DB 11001b
-0345 15              692                             DB 10101b
-0346 15              693                             DB 10101b
-0347 10              694                             DB 10000b
-0348 1D              695                             DB 11101b
-0349 1D              696                             DB 11101b
-034A 00              697                             DB 00000b
-034B 10              698     Key5:           DB 10000b
-034C 17              699                             DB 10111b
-034D 17              700                             DB 10111b
-034E 10              701                             DB 10000b
-034F 1E              702                             DB 11110b
-0350 1E              703                             DB 11110b
-0351 10              704                             DB 10000b
-0352 00              705                             DB 00000b
-0353 10              706     Key6:           DB 10000b
-0354 17              707                             DB 10111b
-0355 17              708                             DB 10111b
-0356 10              709                             DB 10000b
-0357 16              710                             DB 10110b
-0358 16              711                             DB 10110b
-0359 10              712                             DB 10000b
-035A 00              713                             DB 00000b
-035B 10              714     Key7:           DB 10000b
-035C 1E              715                             DB 11110b
-035D 1E              716                             DB 11110b
-035E 18              717                             DB 11000b
-035F 1E              718                             DB 11110b
-0360 1E              719                             DB 11110b
-0361 1E              720                             DB 11110b
-0362 00              721                             DB 00000b
-0363 10              722     Key8:           DB 10000b
-0364 16              723                             DB 10110b
-0365 16              724                             DB 10110b
-0366 10              725                             DB 10000b
-0367 16              726                             DB 10110b
-0368 16              727                             DB 10110b
-0369 10              728                             DB 10000b
-036A 00              729                             DB 00000b
-036B 10              730     Key9:           DB 10000b
-036C 16              731                             DB 10110b
-036D 16              732                             DB 10110b
-036E 10              733                             DB 10000b
-036F 1E              734                             DB 11110b
-0370 1E              735                             DB 11110b
-0371 10              736                             DB 10000b
-0372 00              737                             DB 00000b
-0373 1F              738     KeyEmpty:       DB 11111b
-0374 1F              739                             DB 11111b
-0375 1F              740                             DB 11111b
-0376 1F              741                             DB 11111b
-0377 1F              742                             DB 11111b
-0378 1F              743                             DB 11111b
-0379 1F              744                             DB 11111b
-037A 00              745                             DB 00000b
-037B 1F              746     KeyUS:          DB 11111b
-037C 1F              747                             DB 11111b
-037D 1F              748                             DB 11111b
-037E 1F              749                             DB 11111b
-037F 1F              750                             DB 11111b
-0380 1F              751                             DB 11111b
-0381 10              752                             DB 10000b
-0382 00              753                             DB 00000b
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    13
+033B 1E              677                             DB 11110b
+033C 11              678                             DB 10001b
+033D 1E              679                             DB 11110b
+033E 16              680                             DB 10110b
+033F 19              681                             DB 11001b
+0340 00              682                             DB 00000b
+0341 1D              683     Key4:           DB 11101b
+0342 19              684                             DB 11001b
+0343 15              685                             DB 10101b
+0344 15              686                             DB 10101b
+0345 10              687                             DB 10000b
+0346 1D              688                             DB 11101b
+0347 1D              689                             DB 11101b
+0348 00              690                             DB 00000b
+0349 19              691     Key5:           DB 11001b
+034A 16              692                             DB 10110b
+034B 17              693                             DB 10111b
+034C 19              694                             DB 11001b
+034D 1E              695                             DB 11110b
+034E 16              696                             DB 10110b
+034F 19              697                             DB 11001b
+0350 00              698                             DB 00000b
+0351 19              699     Key6:           DB 11001b
+0352 16              700                             DB 10110b
+0353 17              701                             DB 10111b
+0354 19              702                             DB 11001b
+0355 16              703                             DB 10110b
+0356 16              704                             DB 10110b
+0357 19              705                             DB 11001b
+0358 00              706                             DB 00000b
+0359 19              707     Key7:           DB 11001b
+035A 16              708                             DB 10110b
+035B 1E              709                             DB 11110b
+035C 18              710                             DB 11000b
+035D 1E              711                             DB 11110b
+035E 1E              712                             DB 11110b
+035F 1E              713                             DB 11110b
+0360 00              714                             DB 00000b
+0361 19              715     Key8:           DB 11001b
+0362 16              716                             DB 10110b
+0363 16              717                             DB 10110b
+0364 19              718                             DB 11001b
+0365 16              719                             DB 10110b
+0366 16              720                             DB 10110b
+0367 19              721                             DB 11001b
+0368 00              722                             DB 00000b
+0369 19              723     Key9:           DB 11001b
+036A 16              724                             DB 10110b
+036B 16              725                             DB 10110b
+036C 19              726                             DB 11001b
+036D 1E              727                             DB 11110b
+036E 16              728                             DB 10110b
+036F 19              729                             DB 11001b
+0370 00              730                             DB 00000b
+0371 1F              731     KeyEmpty:       DB 11111b
+0372 1F              732                             DB 11111b
+0373 1F              733                             DB 11111b
+0374 1F              734                             DB 11111b
+0375 1F              735                             DB 11111b
+0376 1F              736                             DB 11111b
+0377 1F              737                             DB 11111b
+0378 00              738                             DB 00000b
+0379 1F              739     KeyUS:          DB 11111b
+037A 1F              740                             DB 11111b
+037B 1F              741                             DB 11111b
+037C 1F              742                             DB 11111b
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    13
 
-                     754     end
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    14
+037D 1F              743                             DB 11111b
+037E 1F              744                             DB 11111b
+037F 10              745                             DB 10000b
+0380 00              746                             DB 00000b
+                     747     end
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    14
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -884,7 +888,7 @@ CCAPM1. . . . . . .  D ADDR   00DBH   A
 CCAPM2. . . . . . .  D ADDR   00DCH   A   
 CCAPM3. . . . . . .  D ADDR   00DDH   A   
 CCAPM4. . . . . . .  D ADDR   00DEH   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    15
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    15
 
 CCF0. . . . . . . .  B ADDR   00D0H.0 A   
 CCF1. . . . . . . .  B ADDR   00D0H.1 A   
@@ -902,9 +906,9 @@ CMOD. . . . . . . .  D ADDR   00D9H   A
 CODE2 . . . . . . .  C ADDR   01D8H   A   
 CODE3 . . . . . . .  C ADDR   01E2H   A   
 CODE4 . . . . . . .  C ADDR   01ECH   A   
-COLUMN_DISPA. . . .  C ADDR   02B1H   A   
-COLUMN_DISPB. . . .  C ADDR   02CBH   A   
-COLUMN_DISPC. . . .  C ADDR   02E6H   A   
+COLUMN_DISPA. . . .  C ADDR   02AAH   A   
+COLUMN_DISPB. . . .  C ADDR   02C3H   A   
+COLUMN_DISPC. . . .  C ADDR   02E0H   A   
 CONTINUE. . . . . .  C ADDR   01CBH   A   
 CP_RL2. . . . . . .  B ADDR   00C8H.0 A   
 CR. . . . . . . . .  B ADDR   00D8H.6 A   
@@ -935,8 +939,8 @@ EECON . . . . . . .  D ADDR   00D2H   A
 EIGHT . . . . . . .  C ADDR   019BH   A   
 ENDEXTISR . . . . .  C ADDR   0252H   A   
 ENDKEYBOARDISR. . .  C ADDR   0238H   A   
-ENDMAINISR. . . . .  C ADDR   0282H   A   
-ENDSCREENISR. . . .  C ADDR   0311H   A   
+ENDMAINISR. . . . .  C ADDR   027CH   A   
+ENDSCREENISR. . . .  C ADDR   030BH   A   
 ENTERCODE . . . . .  C ADDR   01C3H   A   
 ES. . . . . . . . .  B ADDR   00A8H.4 A   
 ET0 . . . . . . . .  B ADDR   00A8H.1 A   
@@ -952,7 +956,7 @@ F0. . . . . . . . .  B ADDR   00D0H.5 A
 FCON. . . . . . . .  D ADDR   00D1H   A   
 FE. . . . . . . . .  B ADDR   0098H.7 A   
 FIVE. . . . . . . .  C ADDR   0183H   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    16
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    16
 
 FOUR. . . . . . . .  C ADDR   017BH   A   
 FPGACON . . . . . .  D ADDR   00F1H   A   
@@ -974,33 +978,33 @@ IPL0. . . . . . . .  D ADDR   00B8H   A
 IPL1. . . . . . . .  D ADDR   00F8H   A   
 IT0 . . . . . . . .  B ADDR   0088H.0 A   
 IT1 . . . . . . . .  B ADDR   0088H.2 A   
-KEY0. . . . . . . .  C ADDR   0323H   A   
-KEY1. . . . . . . .  C ADDR   032BH   A   
-KEY2. . . . . . . .  C ADDR   0333H   A   
-KEY3. . . . . . . .  C ADDR   033BH   A   
-KEY4. . . . . . . .  C ADDR   0343H   A   
-KEY5. . . . . . . .  C ADDR   034BH   A   
-KEY6. . . . . . . .  C ADDR   0353H   A   
-KEY7. . . . . . . .  C ADDR   035BH   A   
-KEY8. . . . . . . .  C ADDR   0363H   A   
-KEY9. . . . . . . .  C ADDR   036BH   A   
+KEY0. . . . . . . .  C ADDR   0321H   A   
+KEY1. . . . . . . .  C ADDR   0329H   A   
+KEY2. . . . . . . .  C ADDR   0331H   A   
+KEY3. . . . . . . .  C ADDR   0339H   A   
+KEY4. . . . . . . .  C ADDR   0341H   A   
+KEY5. . . . . . . .  C ADDR   0349H   A   
+KEY6. . . . . . . .  C ADDR   0351H   A   
+KEY7. . . . . . . .  C ADDR   0359H   A   
+KEY8. . . . . . . .  C ADDR   0361H   A   
+KEY9. . . . . . . .  C ADDR   0369H   A   
 KEYBOARDISR . . . .  C ADDR   008FH   A   
-KEYEMPTY. . . . . .  C ADDR   0373H   A   
-KEYUS . . . . . . .  C ADDR   037BH   A   
+KEYEMPTY. . . . . .  C ADDR   0371H   A   
+KEYUS . . . . . . .  C ADDR   0379H   A   
 LETTERA . . . . . .  C ADDR   01ABH   A   
 LETTERB . . . . . .  C ADDR   01AEH   A   
 LETTERC . . . . . .  C ADDR   01B1H   A   
 LETTERD . . . . . .  C ADDR   01B4H   A   
 LETTERE . . . . . .  C ADDR   01B7H   A   
 LETTERF . . . . . .  C ADDR   01BAH   A   
-LINES . . . . . . .  C ADDR   031CH   A   
-LOOP2 . . . . . . .  C ADDR   02FBH   A   
-LOOP3A. . . . . . .  C ADDR   02B4H   A   
-LOOP3B. . . . . . .  C ADDR   02CEH   A   
-LOOP3C. . . . . . .  C ADDR   02E9H   A   
-LOOP4A. . . . . . .  C ADDR   02A9H   A   
-LOOP4B. . . . . . .  C ADDR   02C2H   A   
-LOOP4C. . . . . . .  C ADDR   02DEH   A   
+LINES . . . . . . .  C ADDR   031AH   A   
+LOOP2 . . . . . . .  C ADDR   02F5H   A   
+LOOP3A. . . . . . .  C ADDR   02ADH   A   
+LOOP3B. . . . . . .  C ADDR   02C8H   A   
+LOOP3C. . . . . . .  C ADDR   02E3H   A   
+LOOP4A. . . . . . .  C ADDR   02A2H   A   
+LOOP4B. . . . . . .  C ADDR   02BBH   A   
+LOOP4C. . . . . . .  C ADDR   02D8H   A   
 MAIN. . . . . . . .  C ADDR   008CH   A   
 MAINISR . . . . . .  C ADDR   0257H   A   
 NEXT. . . . . . . .  C ADDR   0261H   A   
@@ -1020,13 +1024,13 @@ RB8 . . . . . . . .  B ADDR   0098H.2 A
 RCAP2H. . . . . . .  D ADDR   00CBH   A   
 RCAP2L. . . . . . .  D ADDR   00CAH   A   
 RCLK. . . . . . . .  B ADDR   00C8H.5 A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 22:02:01 PAGE    17
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:49:30 PAGE    17
 
 RD. . . . . . . . .  B ADDR   00B0H.7 A   
 REN . . . . . . . .  B ADDR   0098H.4 A   
-RESETA. . . . . . .  C ADDR   02ADH   A   
-RESETB. . . . . . .  C ADDR   02C6H   A   
-RESETC. . . . . . .  C ADDR   02E2H   A   
+RESETA. . . . . . .  C ADDR   02A6H   A   
+RESETB. . . . . . .  C ADDR   02BFH   A   
+RESETC. . . . . . .  C ADDR   02DCH   A   
 RI. . . . . . . . .  B ADDR   0098H.0 A   
 RS0 . . . . . . . .  B ADDR   00D0H.3 A   
 RS1 . . . . . . . .  B ADDR   00D0H.4 A   
@@ -1036,11 +1040,11 @@ SADEN . . . . . . .  D ADDR   00B9H   A
 SBUF. . . . . . . .  D ADDR   0099H   A   
 SCON. . . . . . . .  D ADDR   0098H   A   
 SCREAM. . . . . . .  C ADDR   0276H   A   
-SCREENISR . . . . .  C ADDR   028DH   A   
+SCREENISR . . . . .  C ADDR   0287H   A   
 SEVEN . . . . . . .  C ADDR   0193H   A   
 SHIFT . . . . . . .  B ADDR   00C0H.0 A   
 SIX . . . . . . . .  C ADDR   018BH   A   
-SKIP. . . . . . . .  C ADDR   02BFH   A   
+SKIP. . . . . . . .  C ADDR   02B8H   A   
 SM0 . . . . . . . .  B ADDR   0098H.7 A   
 SM1 . . . . . . . .  B ADDR   0098H.6 A   
 SM2 . . . . . . . .  B ADDR   0098H.5 A   
