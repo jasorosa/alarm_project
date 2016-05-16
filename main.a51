@@ -301,43 +301,12 @@ extISR:					PUSH PSW ; STILL HAVE TO TEST PIR SENSOR AND CONFIGURE THE ISR CORRE
 
 detection:				MOV R7, #0E1h ; set counter to 225 to go to 15s
 						LJMP endExtISR
-						
+
 endExtISR:				POP ACC
 						POP PSW
 						RETI
 
-
-;------------------------------------   "MAIN" PROGRAM   --------------------------------------------------
-
-mainISR:				PUSH PSW
-						PUSH ACC
-						CJNE R6, #00h, next ; alarm is not activated : end otherwise next
-						LJMP endMainISR
-next:					SETB P2.4 ; debug
-						DJNZ R7, endMainISR ; 15s decounting. normally screen ! (?? what ? why screen ?)
-						CPL P2.3 ; flashing led
-						CJNE R6, #01h, scream ; if not pre alarm it is pre alert and after 15s we can start SKRIMIN
-						CJNE R6, #03h, activation ; it is prealarm so activate alarm system after 15sc
-						LJMP endMainISR
-						
-activation:				INC R6 ;prealarm mode to alarm mode
-						CLR P2.4 ; led shows alarm is on
-						LJMP endMainISR
-						
-scream:					INC R6 ;prealert mode to alert mode
-						CPL P2.2 ; change state of buzzer
-						LJMP endMainISR
-					
-
-endMainISR:				MOV TH0,#0FBh ; MSB set 880Hz of timer 0 
-						MOV TL0,#08Fh ; LSB same  for LSB
-						POP ACC
-						POP PSW
-						RETI
-
-
-			
-;------------------------------------   DISPLAY   --------------------------------------------------			
+;------------------------------------   DISPLAY   --------------------------------------------------
 screenISR:				PUSH PSW
 						PUSH ACC
 						SETB RS1
