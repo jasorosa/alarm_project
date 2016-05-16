@@ -20,29 +20,43 @@ init :
 	MOV TMOD,#00000001h
 	MOV TH0,#0FFh  ; 440Hz
 	MOV TL0,#0FFh
-	SETB ET0
-	SETB EA
-	SETB TR0
 	CLR SHIFT ; shift
 	CLR DATA_BITS ; data
 	CLR STORE ; store
+	SETB RS1 ; init some registers in register bank (1,1) for screen
+	SETB RS0
 	MOV R6, #0
 	MOV A,  #0
-	MOV R5, #2 ; counter of blocks
-
+	MOV R5, #0 ; counter of blocks
+	MOV 38h, #88
+	MOV 39h, #88
+	MOV 3Ah, #88
+	MOV 3Bh, #88
+	MOV 3Ch, #80
+	MOV 3Dh, #80
+	MOV 3Eh, #80
+	MOV 3Fh, #80
+	CLR RS0
+	CLR RS1
+	SETB ET0
+	SETB EA
+	SETB TR0
+	
 
 ;Main program
 
 main:					LJMP	main
 
-timer0int:				;SETB RS1 ; change register bank
+timer0int:				PUSH PSW
+						PUSH ACC
+						SETB RS1
+						SETB RS0
 						CLR DATA_BITS
 						CLR SHIFT
 						CLR STORE
 						CLR P2.3
-						;INC R5; increment the counter of Blocks 
 						MOV A,R5
-						SUBB A,#01h ; number of empty block
+						;SUBB A,#01h ; number of empty block
 						MOV R4,A
 						
 						
@@ -68,7 +82,7 @@ loop3a:					RRC A ;right shift
 						DJNZ R4, loop4a
 						
 						
-skip:					MOV DPTR, #Key8
+skip:					MOV DPTR, #Key0
 						;MOV R4, #1 ; repeat pattern N times
 ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
 loop4b:					MOV A, R6 ; R6 is an index for the used row
@@ -76,7 +90,8 @@ loop4b:					MOV A, R6 ; R6 is an index for the used row
 resetb:					MOV A, #0
 						MOV R6, #0
 						
-column_dispb:			MOVC A, @A+DPTR
+column_dispb:			ADD A, 38h
+						MOVC A, @A+DPTR
 						MOV R3, #5
 ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
 loop3b:					RRC A ;right shift
@@ -129,11 +144,15 @@ loop2:					RRC A
 						CLR STORE
 						
 						INC R6
-						;CLR RS1
+						INC R5
+						CLR RS1
+						CLR RS0
 						LJMP RESET_TIMER	
 						; TIMER RESETTING
 RESET_TIMER:			MOV TH0,#0FFh
 						MOV TL0,#0FFh
+						POP ACC
+						POP PSW
 						LJMP endint
 
 endint:					RETI
@@ -145,14 +164,13 @@ endint:					RETI
 
 ;Code Memory Data
 
-lines:		DB	01111111b ; pattern to easily follow lines
-			DB	10111111b
-			DB	11011111b
-			DB	11101111b
-			DB	11110111b
-			DB	11111011b
-			DB	11111101b
-
+lines:		DB 01111111b ; pattern to easily follow lines
+			DB 10111111b
+			DB 11011111b
+			DB 11101111b
+			DB 11110111b
+			DB 11111011b
+			DB 11111101b
 Key0:		DB 10000b
 			DB 10110b
 			DB 10110b
@@ -161,7 +179,6 @@ Key0:		DB 10000b
 			DB 10110b
 			DB 10000b
 			DB 00000b
-	
 Key1: 		DB 11101b
 			DB 11001b
 			DB 11101b
@@ -170,7 +187,6 @@ Key1: 		DB 11101b
 			DB 11101b
 			DB 11000b
 			DB 00000b
-	
 Key2: 		DB 10000b
 			DB 11110b
 			DB 11110b
@@ -179,7 +195,6 @@ Key2: 		DB 10000b
 			DB 10111b
 			DB 10000b
 			DB 00000b
-	
 Key3: 		DB 10000b
 			DB 11110b
 			DB 11110b
@@ -188,7 +203,6 @@ Key3: 		DB 10000b
 			DB 11110b
 			DB 10000b
 			DB 00000b
-	
 Key4: 		DB 11101b
 			DB 11001b
 			DB 10101b
@@ -197,7 +211,6 @@ Key4: 		DB 11101b
 			DB 11101b
 			DB 11101b
 			DB 00000b
-	
 Key5: 		DB 10000b
 			DB 10111b
 			DB 10111b
@@ -206,7 +219,6 @@ Key5: 		DB 10000b
 			DB 11110b
 			DB 10000b
 			DB 00000b
-	
 Key6: 		DB 10000b
 			DB 10111b
 			DB 10111b
@@ -215,7 +227,6 @@ Key6: 		DB 10000b
 			DB 10110b
 			DB 10000b
 			DB 00000b
-	
 Key7: 		DB 10000b
 			DB 11110b
 			DB 11110b
@@ -224,7 +235,6 @@ Key7: 		DB 10000b
 			DB 11110b
 			DB 11110b
 			DB 00000b
-	
 Key8: 		DB 10000b
 			DB 10110b
 			DB 10110b
@@ -233,7 +243,6 @@ Key8: 		DB 10000b
 			DB 10110b
 			DB 10000b
 			DB 00000b
-	
 Key9: 		DB 10000b
 			DB 10110b
 			DB 10110b
@@ -242,7 +251,6 @@ Key9: 		DB 10000b
 			DB 11110b
 			DB 10000b
 			DB 00000b
-				
 KeyEmpty:	DB 11111b
 			DB 11111b
 			DB 11111b
@@ -251,7 +259,6 @@ KeyEmpty:	DB 11111b
 			DB 11111b
 			DB 11111b
 			DB 00000b
-			
 KeyUS:		DB 11111b
 			DB 11111b
 			DB 11111b

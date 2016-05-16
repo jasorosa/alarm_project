@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02c
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   0088          +1    55     IT0     BIT     88H
                 +1    56             
   0089          +1    57     TMOD    DATA    89H
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     2
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     2
 
                 +1    58     
   00C8          +1    59     T2CON   DATA    0C8H
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00AF          +1   121     EA      BIT     0AFH
   00AE          +1   122     EC      BIT     0AEH
   00AD          +1   123     ET2     BIT     0ADH
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     3
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     3
 
   00AC          +1   124     ES      BIT     0ACH
   00AB          +1   125     ET1     BIT     0ABH
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00BD          +1   187     CANIDT2         DATA    0BDH    
   00BE          +1   188     CANIDT3         DATA    0BEH    
   00BF          +1   189     CANIDT4         DATA    0BFH    
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     4
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     4
 
   00C1          +1   190     CANGIE          DATA    0C1H
   00C2          +1   191     CANIE1          DATA    0C2H    
@@ -223,7 +223,7 @@ LOC  OBJ            LINE     SOURCE
                      207     ;Interrupt address vectors
                      208     
 000B                 209     ORG 000Bh
-000B 02002C          210     LJMP timer0int
+000B 02004C          210     LJMP timer0int
                      211     
                      212     
 000E                 213     init :
@@ -236,266 +236,273 @@ LOC  OBJ            LINE     SOURCE
 000E 758901          220             MOV TMOD,#00000001h
 0011 758CFF          221             MOV TH0,#0FFh  ; 440Hz
 0014 758AFF          222             MOV TL0,#0FFh
-0017 D2A9            223             SETB ET0
-0019 D2AF            224             SETB EA
-001B D28C            225             SETB TR0
-001D C2C0            226             CLR SHIFT ; shift
-001F C2C1            227             CLR DATA_BITS ; data
-0021 C2B2            228             CLR STORE ; store
-0023 7E00            229             MOV R6, #0
-0025 7400            230             MOV A,  #0
-0027 7D02            231             MOV R5, #2 ; counter of blocks
-                     232     
-                     233     
-                     234     ;Main program
-                     235     
-0029 020029          236     main:                                   LJMP    main
-                     237     
-002C                 238     timer0int:                              ;SETB RS1 ; change register bank
-002C C2C1            239                                                     CLR DATA_BITS
-002E C2C0            240                                                     CLR SHIFT
-0030 C2B2            241                                                     CLR STORE
-0032 C2A3            242                                                     CLR P2.3
-                     243                                                     ;INC R5; increment the counter of Blocks 
-0034 ED              244                                                     MOV A,R5
-0035 9401            245                                                     SUBB A,#01h ; number of empty block
-0037 FC              246                                                     MOV R4,A
-                     247                                                     
-                     248                                                     
-0038 900106          249                                                     MOV DPTR, #KeyEmpty
-                     250                                                     
-003B BC0003          251                                                     CJNE R4, #0, loop4a
-003E 020057          252                                                     LJMP skip
-                     253     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
-0041 EE              254     loop4a:                                 MOV A, R6 ; R6 is an index for the used row
-0042 B40704          255                                                     CJNE A,#7, column_dispa ; reset row index w
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     5
+0017 C2C0            223             CLR SHIFT ; shift
+0019 C2C1            224             CLR DATA_BITS ; data
+001B C2B2            225             CLR STORE ; store
+001D D2D4            226             SETB RS1 ; init some registers in register bank (1,1) for screen
+001F D2D3            227             SETB RS0
+0021 7E00            228             MOV R6, #0
+0023 7400            229             MOV A,  #0
+0025 7D00            230             MOV R5, #0 ; counter of blocks
+0027 753858          231             MOV 38h, #88
+002A 753958          232             MOV 39h, #88
+002D 753A58          233             MOV 3Ah, #88
+0030 753B58          234             MOV 3Bh, #88
+0033 753C50          235             MOV 3Ch, #80
+0036 753D50          236             MOV 3Dh, #80
+0039 753E50          237             MOV 3Eh, #80
+003C 753F50          238             MOV 3Fh, #80
+003F C2D3            239             CLR RS0
+0041 C2D4            240             CLR RS1
+0043 D2A9            241             SETB ET0
+0045 D2AF            242             SETB EA
+0047 D28C            243             SETB TR0
+                     244             
+                     245     
+                     246     ;Main program
+                     247     
+0049 020049          248     main:                                   LJMP    main
+                     249     
+004C C0D0            250     timer0int:                              PUSH PSW
+004E C0E0            251                                                     PUSH ACC
+0050 D2D4            252                                                     SETB RS1
+0052 D2D3            253                                                     SETB RS0
+0054 C2C1            254                                                     CLR DATA_BITS
+0056 C2C0            255                                                     CLR SHIFT
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     5
 
+0058 C2B2            256                                                     CLR STORE
+005A C2A3            257                                                     CLR P2.3
+005C ED              258                                                     MOV A,R5
+                     259                                                     ;SUBB A,#01h ; number of empty block
+005D FC              260                                                     MOV R4,A
+                     261                                                     
+                     262                                                     
+005E 900137          263                                                     MOV DPTR, #KeyEmpty
+                     264                                                     
+0061 BC0003          265                                                     CJNE R4, #0, loop4a
+0064 02007D          266                                                     LJMP skip
+                     267     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
+0067 EE              268     loop4a:                                 MOV A, R6 ; R6 is an index for the used row
+0068 B40704          269                                                     CJNE A,#7, column_dispa ; reset row index w
                              hen complete
-0045 7400            256     reseta:                                 MOV A, #0
-0047 7E00            257                                                     MOV R6, #0
-                     258                                                     
-0049 93              259     column_dispa:                   MOVC A, @A+DPTR
-004A 7B05            260                                                     MOV R3, #5
-                     261     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
-004C 13              262     loop3a:                                 RRC A ;right shift
-004D 92C1            263                                                     MOV DATA_BITS,C ;carry of the right shift i
+006B 7400            270     reseta:                                 MOV A, #0
+006D 7E00            271                                                     MOV R6, #0
+                     272                                                     
+006F 93              273     column_dispa:                   MOVC A, @A+DPTR
+0070 7B05            274                                                     MOV R3, #5
+                     275     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
+0072 13              276     loop3a:                                 RRC A ;right shift
+0073 92C1            277                                                     MOV DATA_BITS,C ;carry of the right shift i
                              n data output for display
-004F C2C0            264                                                     CLR SHIFT ;shift register
-0051 D2C0            265                                                     SETB SHIFT
-0053 DBF7            266                                                     DJNZ R3, loop3a
-                     267                                                     
-0055 DCEA            268                                                     DJNZ R4, loop4a
-                     269                                                     
-                     270                                                     
-0057 9000F6          271     skip:                                   MOV DPTR, #Key8
-                     272                                                     ;MOV R4, #1 ; repeat pattern N times
-                     273     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
-005A EE              274     loop4b:                                 MOV A, R6 ; R6 is an index for the used row
-005B B40704          275                                                     CJNE A,#7, column_dispb ; reset row index w
+0075 C2C0            278                                                     CLR SHIFT ;shift register
+0077 D2C0            279                                                     SETB SHIFT
+0079 DBF7            280                                                     DJNZ R3, loop3a
+                     281                                                     
+007B DCEA            282                                                     DJNZ R4, loop4a
+                     283                                                     
+                     284                                                     
+007D 9000E7          285     skip:                                   MOV DPTR, #Key0
+                     286                                                     ;MOV R4, #1 ; repeat pattern N times
+                     287     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
+0080 EE              288     loop4b:                                 MOV A, R6 ; R6 is an index for the used row
+0081 B40704          289                                                     CJNE A,#7, column_dispb ; reset row index w
                              hen complete
-005E 7400            276     resetb:                                 MOV A, #0
-0060 7E00            277                                                     MOV R6, #0
-                     278                                                     
-0062 93              279     column_dispb:                   MOVC A, @A+DPTR
-0063 7B05            280                                                     MOV R3, #5
-                     281     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
-0065 13              282     loop3b:                                 RRC A ;right shift
-0066 92C1            283                                                     MOV DATA_BITS,C ;carry of the right shift i
+0084 7400            290     resetb:                                 MOV A, #0
+0086 7E00            291                                                     MOV R6, #0
+                     292                                                     
+0088 2538            293     column_dispb:                   ADD A, 38h
+008A 93              294                                                     MOVC A, @A+DPTR
+008B 7B05            295                                                     MOV R3, #5
+                     296     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
+008D 13              297     loop3b:                                 RRC A ;right shift
+008E 92C1            298                                                     MOV DATA_BITS,C ;carry of the right shift i
                              n data output for display
-0068 C2C0            284                                                     CLR SHIFT ;shift register
-006A D2C0            285                                                     SETB SHIFT
-006C DBF7            286                                                     DJNZ R3, loop3b
-                     287                                                     
-                     288                                                     ;DJNZ R4, loop4b
-                     289                                                     
-006E 7408            290                                                     MOV A, #08
-0070 9D              291                                                     SUBB A,R5  ; number of empty block at left 
+0090 C2C0            299                                                     CLR SHIFT ;shift register
+0092 D2C0            300                                                     SETB SHIFT
+0094 DBF7            301                                                     DJNZ R3, loop3b
+                     302                                                     
+                     303                                                     ;DJNZ R4, loop4b
+                     304                                                     
+0096 7408            305                                                     MOV A, #08
+0098 9D              306                                                     SUBB A,R5  ; number of empty block at left 
                              : 8 - position of current block
-0071 FC              292                                                     MOV R4,A
-                     293                                                     
-0072 900106          294                                                     MOV DPTR, #KeyEmpty
-                     295                                                     
-                     296     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
-0075 EE              297     loop4c:                                 MOV A, R6 ; R6 is an index for the used row
-0076 B40704          298                                                     CJNE A,#7, column_dispc ; reset row index w
-                             hen complete
-0079 7400            299     resetc:                                 MOV A, #0
-007B 7E00            300                                                     MOV R6, #0
-                     301                                                     
-007D 93              302     column_dispc:                   MOVC A, @A+DPTR
-007E 7B05            303                                                     MOV R3, #5
-                     304     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
-0080 13              305     loop3c:                                 RRC A ;right shift
-0081 92C1            306                                                     MOV DATA_BITS,C ;carry of the right shift i
-                             n data output for display
-0083 C2C0            307                                                     CLR SHIFT ;shift register
-0085 D2C0            308                                                     SETB SHIFT
-0087 DBF7            309                                                     DJNZ R3, loop3c
+0099 FC              307                                                     MOV R4,A
+                     308                                                     
+009A 900137          309                                                     MOV DPTR, #KeyEmpty
                      310                                                     
-0089 DCEA            311                                                     DJNZ R4, loop4c
-                     312                                                     
-                     313                                                     
-                     314                                                     
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     6
+                     311     ;;;;;;;;;;;;;;;;;;;;;; number of repeated pattern
+009D EE              312     loop4c:                                 MOV A, R6 ; R6 is an index for the used row
+009E B40704          313                                                     CJNE A,#7, column_dispc ; reset row index w
+                             hen complete
+00A1 7400            314     resetc:                                 MOV A, #0
+00A3 7E00            315                                                     MOV R6, #0
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     6
 
-                     315     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;lines
-008B 9000AF          316                                                     MOV DPTR, #lines
-008E EE              317                                                     MOV A, R6
-008F 93              318                                                     MOVC A, @A+DPTR
-                     319                                                     
-0090 7A08            320                                                     MOV R2, #8
-0092 13              321     loop2:                                  RRC A
-0093 92C1            322                                                     MOV DATA_BITS,C ;carry of the right shift i
+                     316                                                     
+00A5 93              317     column_dispc:                   MOVC A, @A+DPTR
+00A6 7B05            318                                                     MOV R3, #5
+                     319     ;;;;;;;;;;;;;;;;;;;;;;;;;each column bit (one by one)
+00A8 13              320     loop3c:                                 RRC A ;right shift
+00A9 92C1            321                                                     MOV DATA_BITS,C ;carry of the right shift i
                              n data output for display
-0095 C2C0            323                                                     CLR SHIFT ;shift register
-0097 D2C0            324                                                     SETB SHIFT
-0099 DAF7            325                                                     DJNZ R2,loop2
-                     326                                                     
-009B C2B2            327                                                     CLR STORE 
-009D D2B2            328                                                     SETB STORE ; store
-009F C2B2            329                                                     CLR STORE
-                     330                                                     
-00A1 0E              331                                                     INC R6
-                     332                                                     ;CLR RS1
-00A2 0200A5          333                                                     LJMP RESET_TIMER        
-                     334                                                     ; TIMER RESETTING
-00A5 758CFF          335     RESET_TIMER:                    MOV TH0,#0FFh
-00A8 758AFF          336                                                     MOV TL0,#0FFh
-00AB 0200AE          337                                                     LJMP endint
-                     338     
-00AE 32              339     endint:                                 RETI
-                     340     
+00AB C2C0            322                                                     CLR SHIFT ;shift register
+00AD D2C0            323                                                     SETB SHIFT
+00AF DBF7            324                                                     DJNZ R3, loop3c
+                     325                                                     
+00B1 DCEA            326                                                     DJNZ R4, loop4c
+                     327                                                     
+                     328                                                     
+                     329                                                     
+                     330     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;lines
+00B3 9000E0          331                                                     MOV DPTR, #lines
+00B6 EE              332                                                     MOV A, R6
+00B7 93              333                                                     MOVC A, @A+DPTR
+                     334                                                     
+00B8 7A08            335                                                     MOV R2, #8
+00BA 13              336     loop2:                                  RRC A
+00BB 92C1            337                                                     MOV DATA_BITS,C ;carry of the right shift i
+                             n data output for display
+00BD C2C0            338                                                     CLR SHIFT ;shift register
+00BF D2C0            339                                                     SETB SHIFT
+00C1 DAF7            340                                                     DJNZ R2,loop2
                      341                                                     
-                     342                                                     
-                     343     
-                     344     ;Functions
-                     345     
-                     346     ;Code Memory Data
-                     347     
-00AF 7F              348     lines:          DB      01111111b ; pattern to easily follow lines
-00B0 BF              349                             DB      10111111b
-00B1 DF              350                             DB      11011111b
-00B2 EF              351                             DB      11101111b
-00B3 F7              352                             DB      11110111b
-00B4 FB              353                             DB      11111011b
-00B5 FD              354                             DB      11111101b
-                     355     
-00B6 10              356     Key0:           DB 10000b
-00B7 16              357                             DB 10110b
-00B8 16              358                             DB 10110b
-00B9 16              359                             DB 10110b
-00BA 16              360                             DB 10110b
-00BB 16              361                             DB 10110b
-00BC 10              362                             DB 10000b
-00BD 00              363                             DB 00000b
-                     364             
-00BE 1D              365     Key1:           DB 11101b
-00BF 19              366                             DB 11001b
-00C0 1D              367                             DB 11101b
-00C1 1D              368                             DB 11101b
-00C2 1D              369                             DB 11101b
-00C3 1D              370                             DB 11101b
-00C4 18              371                             DB 11000b
-00C5 00              372                             DB 00000b
-                     373             
-00C6 10              374     Key2:           DB 10000b
-00C7 1E              375                             DB 11110b
-00C8 1E              376                             DB 11110b
-00C9 10              377                             DB 10000b
-00CA 17              378                             DB 10111b
-00CB 17              379                             DB 10111b
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     7
+00C3 C2B2            342                                                     CLR STORE 
+00C5 D2B2            343                                                     SETB STORE ; store
+00C7 C2B2            344                                                     CLR STORE
+                     345                                                     
+00C9 0E              346                                                     INC R6
+00CA 0D              347                                                     INC R5
+00CB C2D4            348                                                     CLR RS1
+00CD C2D3            349                                                     CLR RS0
+00CF 0200D2          350                                                     LJMP RESET_TIMER        
+                     351                                                     ; TIMER RESETTING
+00D2 758CFF          352     RESET_TIMER:                    MOV TH0,#0FFh
+00D5 758AFF          353                                                     MOV TL0,#0FFh
+00D8 D0E0            354                                                     POP ACC
+00DA D0D0            355                                                     POP PSW
+00DC 0200DF          356                                                     LJMP endint
+                     357     
+00DF 32              358     endint:                                 RETI
+                     359     
+                     360                                                     
+                     361                                                     
+                     362     
+                     363     ;Functions
+                     364     
+                     365     ;Code Memory Data
+                     366     
+00E0 7F              367     lines:          DB 01111111b ; pattern to easily follow lines
+00E1 BF              368                             DB 10111111b
+00E2 DF              369                             DB 11011111b
+00E3 EF              370                             DB 11101111b
+00E4 F7              371                             DB 11110111b
+00E5 FB              372                             DB 11111011b
+00E6 FD              373                             DB 11111101b
+00E7 10              374     Key0:           DB 10000b
+00E8 16              375                             DB 10110b
+00E9 16              376                             DB 10110b
+00EA 16              377                             DB 10110b
+00EB 16              378                             DB 10110b
+00EC 16              379                             DB 10110b
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     7
 
-00CC 10              380                             DB 10000b
-00CD 00              381                             DB 00000b
-                     382             
-00CE 10              383     Key3:           DB 10000b
-00CF 1E              384                             DB 11110b
-00D0 1E              385                             DB 11110b
-00D1 10              386                             DB 10000b
-00D2 1E              387                             DB 11110b
-00D3 1E              388                             DB 11110b
-00D4 10              389                             DB 10000b
-00D5 00              390                             DB 00000b
-                     391             
-00D6 1D              392     Key4:           DB 11101b
-00D7 19              393                             DB 11001b
-00D8 15              394                             DB 10101b
-00D9 15              395                             DB 10101b
-00DA 10              396                             DB 10000b
-00DB 1D              397                             DB 11101b
-00DC 1D              398                             DB 11101b
-00DD 00              399                             DB 00000b
-                     400             
-00DE 10              401     Key5:           DB 10000b
-00DF 17              402                             DB 10111b
-00E0 17              403                             DB 10111b
-00E1 10              404                             DB 10000b
-00E2 1E              405                             DB 11110b
-00E3 1E              406                             DB 11110b
-00E4 10              407                             DB 10000b
-00E5 00              408                             DB 00000b
-                     409             
-00E6 10              410     Key6:           DB 10000b
-00E7 17              411                             DB 10111b
-00E8 17              412                             DB 10111b
-00E9 10              413                             DB 10000b
-00EA 16              414                             DB 10110b
-00EB 16              415                             DB 10110b
-00EC 10              416                             DB 10000b
-00ED 00              417                             DB 00000b
-                     418             
-00EE 10              419     Key7:           DB 10000b
-00EF 1E              420                             DB 11110b
-00F0 1E              421                             DB 11110b
-00F1 18              422                             DB 11000b
-00F2 1E              423                             DB 11110b
-00F3 1E              424                             DB 11110b
-00F4 1E              425                             DB 11110b
-00F5 00              426                             DB 00000b
-                     427             
-00F6 1B              428     Key8:           DB 11011b
-00F7 11              429                             DB 10001b
-00F8 11              430                             DB 10001b
-00F9 11              431                             DB 10001b
-00FA 11              432                             DB 10001b
-00FB 00              433                             DB 00000b
-00FC 0A              434                             DB 01010b
-00FD 00              435                             DB 00000b
-                     436             
-00FE 10              437     Key9:           DB 10000b
-00FF 16              438                             DB 10110b
-0100 16              439                             DB 10110b
-0101 10              440                             DB 10000b
-0102 1E              441                             DB 11110b
-0103 1E              442                             DB 11110b
-0104 10              443                             DB 10000b
-0105 00              444                             DB 00000b
-                     445                                     
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     8
+00ED 10              380                             DB 10000b
+00EE 00              381                             DB 00000b
+00EF 1D              382     Key1:           DB 11101b
+00F0 19              383                             DB 11001b
+00F1 1D              384                             DB 11101b
+00F2 1D              385                             DB 11101b
+00F3 1D              386                             DB 11101b
+00F4 1D              387                             DB 11101b
+00F5 18              388                             DB 11000b
+00F6 00              389                             DB 00000b
+00F7 10              390     Key2:           DB 10000b
+00F8 1E              391                             DB 11110b
+00F9 1E              392                             DB 11110b
+00FA 10              393                             DB 10000b
+00FB 17              394                             DB 10111b
+00FC 17              395                             DB 10111b
+00FD 10              396                             DB 10000b
+00FE 00              397                             DB 00000b
+00FF 10              398     Key3:           DB 10000b
+0100 1E              399                             DB 11110b
+0101 1E              400                             DB 11110b
+0102 10              401                             DB 10000b
+0103 1E              402                             DB 11110b
+0104 1E              403                             DB 11110b
+0105 10              404                             DB 10000b
+0106 00              405                             DB 00000b
+0107 1D              406     Key4:           DB 11101b
+0108 19              407                             DB 11001b
+0109 15              408                             DB 10101b
+010A 15              409                             DB 10101b
+010B 10              410                             DB 10000b
+010C 1D              411                             DB 11101b
+010D 1D              412                             DB 11101b
+010E 00              413                             DB 00000b
+010F 10              414     Key5:           DB 10000b
+0110 17              415                             DB 10111b
+0111 17              416                             DB 10111b
+0112 10              417                             DB 10000b
+0113 1E              418                             DB 11110b
+0114 1E              419                             DB 11110b
+0115 10              420                             DB 10000b
+0116 00              421                             DB 00000b
+0117 10              422     Key6:           DB 10000b
+0118 17              423                             DB 10111b
+0119 17              424                             DB 10111b
+011A 10              425                             DB 10000b
+011B 16              426                             DB 10110b
+011C 16              427                             DB 10110b
+011D 10              428                             DB 10000b
+011E 00              429                             DB 00000b
+011F 10              430     Key7:           DB 10000b
+0120 1E              431                             DB 11110b
+0121 1E              432                             DB 11110b
+0122 18              433                             DB 11000b
+0123 1E              434                             DB 11110b
+0124 1E              435                             DB 11110b
+0125 1E              436                             DB 11110b
+0126 00              437                             DB 00000b
+0127 10              438     Key8:           DB 10000b
+0128 16              439                             DB 10110b
+0129 16              440                             DB 10110b
+012A 10              441                             DB 10000b
+012B 16              442                             DB 10110b
+012C 16              443                             DB 10110b
+012D 10              444                             DB 10000b
+012E 00              445                             DB 00000b
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     8
 
-0106 1F              446     KeyEmpty:       DB 11111b
-0107 1F              447                             DB 11111b
-0108 1F              448                             DB 11111b
-0109 1F              449                             DB 11111b
-010A 1F              450                             DB 11111b
-010B 1F              451                             DB 11111b
-010C 1F              452                             DB 11111b
-010D 00              453                             DB 00000b
-                     454                             
-010E 1F              455     KeyUS:          DB 11111b
-010F 1F              456                             DB 11111b
-0110 1F              457                             DB 11111b
-0111 1F              458                             DB 11111b
-0112 1F              459                             DB 11111b
-0113 1F              460                             DB 11111b
-0114 10              461                             DB 10000b
-0115 00              462                             DB 00000b
-                     463                                             
-                     464     end                                             
+012F 10              446     Key9:           DB 10000b
+0130 16              447                             DB 10110b
+0131 16              448                             DB 10110b
+0132 10              449                             DB 10000b
+0133 1E              450                             DB 11110b
+0134 1E              451                             DB 11110b
+0135 10              452                             DB 10000b
+0136 00              453                             DB 00000b
+0137 1F              454     KeyEmpty:       DB 11111b
+0138 1F              455                             DB 11111b
+0139 1F              456                             DB 11111b
+013A 1F              457                             DB 11111b
+013B 1F              458                             DB 11111b
+013C 1F              459                             DB 11111b
+013D 1F              460                             DB 11111b
+013E 00              461                             DB 00000b
+013F 1F              462     KeyUS:          DB 11111b
+0140 1F              463                             DB 11111b
+0141 1F              464                             DB 11111b
+0142 1F              465                             DB 11111b
+0143 1F              466                             DB 11111b
+0144 1F              467                             DB 11111b
+0145 10              468                             DB 10000b
+0146 00              469                             DB 00000b
+                     470                                             
+                     471     end                                             
                                                                              
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE     9
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE     9
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -563,7 +570,7 @@ CCAPM2 . . . . . .  D ADDR   00DCH   A
 CCAPM3 . . . . . .  D ADDR   00DDH   A   
 CCAPM4 . . . . . .  D ADDR   00DEH   A   
 CCF0 . . . . . . .  B ADDR   00D0H.0 A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE    10
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE    10
 
 CCF1 . . . . . . .  B ADDR   00D0H.1 A   
 CCF2 . . . . . . .  B ADDR   00D0H.2 A   
@@ -575,9 +582,9 @@ CH . . . . . . . .  D ADDR   00F9H   A
 CKCON. . . . . . .  D ADDR   008FH   A   
 CL . . . . . . . .  D ADDR   00E9H   A   
 CMOD . . . . . . .  D ADDR   00D9H   A   
-COLUMN_DISPA . . .  C ADDR   0049H   A   
-COLUMN_DISPB . . .  C ADDR   0062H   A   
-COLUMN_DISPC . . .  C ADDR   007DH   A   
+COLUMN_DISPA . . .  C ADDR   006FH   A   
+COLUMN_DISPB . . .  C ADDR   0088H   A   
+COLUMN_DISPC . . .  C ADDR   00A5H   A   
 CP_RL2 . . . . . .  B ADDR   00C8H.0 A   
 CR . . . . . . . .  B ADDR   00D8H.6 A   
 CY . . . . . . . .  B ADDR   00D0H.7 A   
@@ -590,7 +597,7 @@ EADC . . . . . . .  B ADDR   00E8H.1 A
 EC . . . . . . . .  B ADDR   00A8H.6 A   
 ECAN . . . . . . .  B ADDR   00E8H.0 A   
 EECON. . . . . . .  D ADDR   00D2H   A   
-ENDINT . . . . . .  C ADDR   00AEH   A   
+ENDINT . . . . . .  C ADDR   00DFH   A   
 ES . . . . . . . .  B ADDR   00A8H.4 A   
 ET0. . . . . . . .  B ADDR   00A8H.1 A   
 ET1. . . . . . . .  B ADDR   00A8H.3 A   
@@ -617,29 +624,29 @@ IPL0 . . . . . . .  D ADDR   00B8H   A
 IPL1 . . . . . . .  D ADDR   00F8H   A   
 IT0. . . . . . . .  B ADDR   0088H.0 A   
 IT1. . . . . . . .  B ADDR   0088H.2 A   
-KEY0 . . . . . . .  C ADDR   00B6H   A   
-KEY1 . . . . . . .  C ADDR   00BEH   A   
-KEY2 . . . . . . .  C ADDR   00C6H   A   
-KEY3 . . . . . . .  C ADDR   00CEH   A   
-KEY4 . . . . . . .  C ADDR   00D6H   A   
-KEY5 . . . . . . .  C ADDR   00DEH   A   
-KEY6 . . . . . . .  C ADDR   00E6H   A   
-KEY7 . . . . . . .  C ADDR   00EEH   A   
-KEY8 . . . . . . .  C ADDR   00F6H   A   
-KEY9 . . . . . . .  C ADDR   00FEH   A   
-KEYEMPTY . . . . .  C ADDR   0106H   A   
-KEYUS. . . . . . .  C ADDR   010EH   A   
-LINES. . . . . . .  C ADDR   00AFH   A   
-LOOP2. . . . . . .  C ADDR   0092H   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE    11
+KEY0 . . . . . . .  C ADDR   00E7H   A   
+KEY1 . . . . . . .  C ADDR   00EFH   A   
+KEY2 . . . . . . .  C ADDR   00F7H   A   
+KEY3 . . . . . . .  C ADDR   00FFH   A   
+KEY4 . . . . . . .  C ADDR   0107H   A   
+KEY5 . . . . . . .  C ADDR   010FH   A   
+KEY6 . . . . . . .  C ADDR   0117H   A   
+KEY7 . . . . . . .  C ADDR   011FH   A   
+KEY8 . . . . . . .  C ADDR   0127H   A   
+KEY9 . . . . . . .  C ADDR   012FH   A   
+KEYEMPTY . . . . .  C ADDR   0137H   A   
+KEYUS. . . . . . .  C ADDR   013FH   A   
+LINES. . . . . . .  C ADDR   00E0H   A   
+LOOP2. . . . . . .  C ADDR   00BAH   A   
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE    11
 
-LOOP3A . . . . . .  C ADDR   004CH   A   
-LOOP3B . . . . . .  C ADDR   0065H   A   
-LOOP3C . . . . . .  C ADDR   0080H   A   
-LOOP4A . . . . . .  C ADDR   0041H   A   
-LOOP4B . . . . . .  C ADDR   005AH   A   
-LOOP4C . . . . . .  C ADDR   0075H   A   
-MAIN . . . . . . .  C ADDR   0029H   A   
+LOOP3A . . . . . .  C ADDR   0072H   A   
+LOOP3B . . . . . .  C ADDR   008DH   A   
+LOOP3C . . . . . .  C ADDR   00A8H   A   
+LOOP4A . . . . . .  C ADDR   0067H   A   
+LOOP4B . . . . . .  C ADDR   0080H   A   
+LOOP4C . . . . . .  C ADDR   009DH   A   
+MAIN . . . . . . .  C ADDR   0049H   A   
 OV . . . . . . . .  B ADDR   00D0H.2 A   
 P. . . . . . . . .  B ADDR   00D0H.0 A   
 P0 . . . . . . . .  D ADDR   0080H   A   
@@ -655,10 +662,10 @@ RCAP2L . . . . . .  D ADDR   00CAH   A
 RCLK . . . . . . .  B ADDR   00C8H.5 A   
 RD . . . . . . . .  B ADDR   00B0H.7 A   
 REN. . . . . . . .  B ADDR   0098H.4 A   
-RESETA . . . . . .  C ADDR   0045H   A   
-RESETB . . . . . .  C ADDR   005EH   A   
-RESETC . . . . . .  C ADDR   0079H   A   
-RESET_TIMER. . . .  C ADDR   00A5H   A   
+RESETA . . . . . .  C ADDR   006BH   A   
+RESETB . . . . . .  C ADDR   0084H   A   
+RESETC . . . . . .  C ADDR   00A1H   A   
+RESET_TIMER. . . .  C ADDR   00D2H   A   
 RI . . . . . . . .  B ADDR   0098H.0 A   
 RS0. . . . . . . .  B ADDR   00D0H.3 A   
 RS1. . . . . . . .  B ADDR   00D0H.4 A   
@@ -668,7 +675,7 @@ SADEN. . . . . . .  D ADDR   00B9H   A
 SBUF . . . . . . .  D ADDR   0099H   A   
 SCON . . . . . . .  D ADDR   0098H   A   
 SHIFT. . . . . . .  B ADDR   00C0H.0 A   
-SKIP . . . . . . .  C ADDR   0057H   A   
+SKIP . . . . . . .  C ADDR   007DH   A   
 SM0. . . . . . . .  B ADDR   0098H.7 A   
 SM1. . . . . . . .  B ADDR   0098H.6 A   
 SM2. . . . . . . .  B ADDR   0098H.5 A   
@@ -688,7 +695,7 @@ TH0. . . . . . . .  D ADDR   008CH   A
 TH1. . . . . . . .  D ADDR   008DH   A   
 TH2. . . . . . . .  D ADDR   00CDH   A   
 TI . . . . . . . .  B ADDR   0098H.1 A   
-TIMER0INT. . . . .  C ADDR   002CH   A   
+TIMER0INT. . . . .  C ADDR   004CH   A   
 TL0. . . . . . . .  D ADDR   008AH   A   
 TL1. . . . . . . .  D ADDR   008BH   A   
 TL2. . . . . . . .  D ADDR   00CCH   A   
@@ -699,7 +706,7 @@ TR2. . . . . . . .  B ADDR   00C8H.2 A
 TXD. . . . . . . .  B ADDR   00B0H.1 A   
 WDTPRG . . . . . .  D ADDR   00A7H   A   
 WDTRST . . . . . .  D ADDR   00A6H   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/12/2016 16:36:58 PAGE    12
+A51 MACRO ASSEMBLER  MAIN                                                                 05/13/2016 12:22:08 PAGE    12
 
 WR . . . . . . . .  B ADDR   00B0H.6 A   
 
