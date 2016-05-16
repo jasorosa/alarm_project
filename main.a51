@@ -10,8 +10,8 @@ ORG 0000h
 LJMP init
 ORG 000Bh
 LJMP keyboardISR ; timer 0
-ORG 0013h
-LJMP extISR ; ext interrupt 1
+;ORG 0013h
+;LJMP extISR ; ext interrupt 1
 ORG 001Bh
 LJMP mainISR ; timer 1
 ORG 002Bh
@@ -55,7 +55,7 @@ init:					MOV SP,#070h
 						SETB ET0 ; enable timer 0 interrupt
 						SETB ET1 ; enable timer 1 interrupt
 						SETB ET2 ; enable timer 2 interrupt
-						SETB EX1 ; enable external interrupt 1
+						;SETB EX1 ; enable external interrupt 1
 						SETB EA ; enable int
 						SETB TR0 ; enable timer 0, 1, 2
 						SETB TR1
