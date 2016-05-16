@@ -10,28 +10,27 @@ ORG 0000h
 LJMP init
 ORG 000Bh
 LJMP keyboardISR ; timer 0
-ORG 0013h
-LJMP extISR ; ext interrupt 1
 ORG 001Bh
-LJMP mainISR ; timer 1
+LJMP extISR ; timer 1
 ORG 002Bh
 LJMP screenISR ; timer 2
 
 
-init:					MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1 
-						MOV TH0,#0FBh ; MSB set 880Hz of timer 0 
+init:					MOV SP,#070h ; as we use several register bank (but what is it exacly ?)
+						MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1
+						MOV TH0,#0FBh ; MSB set 880Hz of timer 0
 						MOV TL0,#08Fh ; LSB same  for LSB
 						MOV TH1, #0Bh ; about 15Hz for timer 1
-						MOV TL1, #0DBh ;
-						MOV TH2,#0FBh 
-						MOV TL2,#08Fh 
+						MOV TL1, #0DBh
+						MOV TH2,#0FBh
+						MOV TL2,#08Fh
 						MOV R4, #00110100b ; 2 LSD 4 first = 4, 4 next = 3
 						MOV R5, #00010010b ; 2 MSD 4 next = 2, 4 next = 1 => code is 1234
 						MOV R0, #00h
 						MOV R6, #00h
 						MOV 31h, #0Fh ; RAM byte addressable to save previous state of keyboard (random initial value)
-						MOV 32h, #0Fh ; RAM byte addressable to store temporarily "data pointer" for screen (random init value) 
-						
+						MOV 32h, #0Fh ; RAM byte addressable to store temporarily "data pointer" for screen (random init value)
+
 						MOV 38h, #88
 						MOV 39h, #88
 						MOV 3Ah, #88
@@ -40,7 +39,7 @@ init:					MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1
 						MOV 3Dh, #80
 						MOV 3Eh, #80
 						MOV 3Fh, #80
-						
+
 						CLR DATA_BITS
 						CLR SHIFT
 						CLR STORE
@@ -59,41 +58,51 @@ init:					MOV TMOD,#00010001b ; 16 bit mode for timer 0 and 1
 						SETB TR0 ; enable timer 0, 1, 2
 						SETB TR1
 						SETB TR2
-						
 
+;------------------------------------   MAIN   --------------------------------------------------
+main:					CJNE R6, #00h, next ; alarm is not activated : end otherwise next
+						LJMP main
+next:					SETB P2.4 ; debug
+						DJNZ R7, main ; 15s decounting. normally screen ! (?? what ? why screen ?)
+						CPL P2.3 ; flashing led
+						CJNE R6, #01h, scream ; if not pre alarm it is pre alert and after 15s we can start SKRIMIN
+						CJNE R6, #03h, activation ; it is prealarm so activate alarm system after 15sc
+						LJMP main
 
+activation:				INC R6 ;prealarm mode to alarm mode
+						CLR P2.4 ; led shows alarm is on
+						LJMP main
 
-
-main:					LJMP main
-
-
+scream:					INC R6 ;prealert mode to alert mode
+						CPL P2.2 ; change state of buzzer
+						LJMP main
 
 ;------------------------------------   KEYBOARD   --------------------------------------------------
-keyboardISR:			PUSH PSW ; review PSW, ACC and PUSH/POP !!!!
+keyboardISR:			PUSH PSW ; review what are PSW, ACC and PUSH/POP !!!!
 						PUSH ACC
 						CLR P2.3 ; debug
 						MOV P0,#00001111b
-						
+
 						JNB P0.0, dichotomy00
 						JNB P0.1, dichotomy01
 						JNB P0.2, dichotomy02
 						JNB P0.3, dichotomy03
 						LJMP nothing
-						
+
 dichotomy00:			CLR P0.4
 						CLR P0.5
 						SETB P0.6
 						SETB P0.7
 						JNB P0.0, dichotomy00zero
 						LJMP dichotomy00one
-						
+
 dichotomy01:			CLR P0.4
 						CLR P0.5
 						SETB P0.6
 						SETB P0.7
 						JNB P0.1, dichotomy01zero
 						LJMP dichotomy01one
-						
+
 dichotomy02:			CLR P0.4
 						CLR P0.5
 						SETB P0.6
@@ -107,29 +116,28 @@ dichotomy03:			CLR P0.4
 						SETB P0.7
 						JNB P0.3, dichotomy03zero
 						LJMP dichotomy03one
-						
+
 dichotomy00zero:		CLR P0.4
 						SETB P0.5
 						CLR P0.6
 						SETB P0.7
 						JNB P0.0, intermediateletterC
 						LJMP letterD
-						
-						
+
 dichotomy01zero:		CLR P0.4
 						SETB P0.5
 						CLR P0.6
 						SETB P0.7
 						JNB P0.1, intermediateletterB
 						LJMP three
-						
+
 dichotomy02zero:		CLR P0.4
 						SETB P0.5
 						CLR P0.6
 						SETB P0.7
 						JNB P0.2, zero
 						LJMP two
-						
+
 dichotomy03zero:		CLR P0.4
 						SETB P0.5
 						CLR P0.6
@@ -146,14 +154,14 @@ dichotomy00one: 		CLR P0.4
 						SETB P0.7
 						JNB P0.0, intermediateletterE
 						LJMP letterF
-						
+
 dichotomy01one:			CLR P0.4
 						SETB P0.5
 						CLR P0.6
 						SETB P0.7
 						JNB P0.1, six
 						LJMP nine
-						
+
 dichotomy02one: 		CLR P0.4
 						SETB P0.5
 						CLR P0.6
@@ -170,7 +178,7 @@ dichotomy03one: 		CLR P0.4
 						SETB P0.7
 						JNB P0.3, four
 						LJMP seven
-						
+
 zero:					MOV R1, #00h
 						MOV 32h, #0 ; each code block has 8 lines so if we want key0, we start from key0+0, if key1 : key0+8 and so on
 						LJMP entercode
@@ -240,6 +248,7 @@ code4:					CJNE R0, #03h, incR0
 						ADD  A, R2
 						MOV  R2, A
 						LJMP checkCode
+
 incR0:					INC R0				; increment the counter of button pressed
 						LJMP endKeyboardISR
 
@@ -255,14 +264,14 @@ checkCode:				MOV R0, #00h
 						CLR P2.4 ;debug only
 						CJNE R6, #00h, desactivate ; if alarm activated, desactivate it
 						MOV R6, #01h ; otherwise, activate it (prealarm before actually set on)
-						MOV R7, #0E1h ; put 15 seconds of period in the counter before prealarm => alarm (counter at 225 with 15Hz) 
+						MOV R7, #0E1h ; put 15 seconds of period in the counter before prealarm => alarm (counter at 225 with 15Hz)
 						LJMP endKeyboardISR
-						
+
 desactivate:			MOV R6, #00h
 						MOV R7, #00h ; reset the counter if the alarm is desactivate
 						SETB P2.3 ;debug
 						LJMP endKeyboardISR
-						
+
 wrong:					; SHOW WITH SCREEN OR LED ITS WRONG
 						LJMP clearcode
 
@@ -276,12 +285,12 @@ clearcode:				MOV R2, #00h
 						MOV 39h, A
 						MOV 38h, A
 						LJMP endKeyboardISR
-						
-endKeyboardISR:			MOV TH1,#0Bh 
-						MOV TL1,#0DBh 
+
+endKeyboardISR:			MOV TH1,#0Bh
+						MOV TL1,#0DBh
 						POP ACC
 						POP PSW
-						RETI						
+						RETI
 
 
 ;------------------------------------   EXT INTERRUPT (PIR SENSOR)   --------------------------------------------------
@@ -340,9 +349,9 @@ screenISR:				PUSH PSW
 						MOV A,R5 ; init = 0, its index of the block we are dealing with
 						;SUBB A, #1; WATT ? R5 - R5 = 0 -> something wrong, should delete this line right?
 						MOV R4,A
-						
-						MOV DPTR, #KeyEmpty ; first some empty blocks 
-						
+
+						MOV DPTR, #KeyEmpty ; first some empty blocks
+
 						CJNE R4, #0, loop4a ; if R4 = 0 skip this loop !
 						LJMP skip
 						; loop on number of repeated pattern
@@ -350,7 +359,7 @@ loop4a:					MOV A, R6 ; R6 is an index for the used row
 						CJNE A,#7, column_dispa ; reset row index when complete
 reseta:					MOV A, #0
 						MOV R6, #0
-						
+
 column_dispa:			MOVC A, @A+DPTR
 						MOV R3, #5
 						;each column bit (one by one)
@@ -359,10 +368,10 @@ loop3a:					RRC A ;right shift
 						CLR SHIFT ;shift register
 						SETB SHIFT
 						DJNZ R3, loop3a
-						
+
 						DJNZ R4, loop4a
-						
-						;now display the wanted value 
+
+						;now display the wanted value
 skip:					MOV DPTR, #Key0 ;start index at Key0
 						;MOV R4, #1 ; repeat pattern N times NO NEED
 						; number of repeated pattern
@@ -392,7 +401,7 @@ loop4c:					MOV A, R6 ; R6 is an index for the used row
 						CJNE A,#7, column_dispc ; reset row index when complete
 resetc:					MOV A, #0
 						MOV R6, #0
-						
+
 column_dispc:			MOVC A, @A+DPTR
 						MOV R3, #5
 						;each column bit (one by one)
@@ -403,8 +412,6 @@ loop3c:					RRC A ;right shift
 						DJNZ R3, loop3c
 
 						DJNZ R4, loop4c
-
-
 
 						;loop on the lines
 						MOV DPTR, #lines
@@ -418,24 +425,22 @@ loop2:					RRC A
 						SETB SHIFT
 						DJNZ R2,loop2
 
-						CLR STORE 
+						CLR STORE
 						SETB STORE ; store
 						CLR STORE
 
 						INC R6
-						INC R5; increment the counter of Blocks 
+						INC R5; increment the counter of Blocks
 						CJNE R5, #8, endScreenISR
-						MOV R5, #0 	
+						MOV R5, #0
 						
-endScreenISR:			
-						CLR RS0
+endScreenISR:			CLR RS0
 						CLR RS1
-						MOV TH0,#0FFh
-						MOV TL0,#0FFh
+						MOV TH2,#0FBh
+						MOV TL2,#08Fh
 						POP ACC
 						POP PSW
-						RETI		
-
+						RETI
 
 ;;------------------------------------   CODE MEM DATA   --------------------------------------------------
 
