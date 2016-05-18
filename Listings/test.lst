@@ -1,10 +1,10 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     1
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02c
-OBJECT MODULE PLACED IN .\Objects\main.obj
-ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE U:\project ;icro\alarm_project-project_screen\main.a51 NOMOD51 SET(SMAL
-                      L) DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj) EP
+OBJECT MODULE PLACED IN .\Objects\test.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE U:\project ;icro\alarm_project-project_screen\test.a51 NOMOD51 SET(SMAL
+                      L) DEBUG PRINT(.\Listings\test.lst) OBJECT(.\Objects\test.obj) EP
 
 LOC  OBJ            LINE     SOURCE
 
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   0088          +1    55     IT0     BIT     88H
                 +1    56             
   0089          +1    57     TMOD    DATA    89H
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     2
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     2
 
                 +1    58     
   00C8          +1    59     T2CON   DATA    0C8H
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   00AF          +1   121     EA      BIT     0AFH
   00AE          +1   122     EC      BIT     0AEH
   00AD          +1   123     ET2     BIT     0ADH
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     3
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     3
 
   00AC          +1   124     ES      BIT     0ACH
   00AB          +1   125     ET1     BIT     0ABH
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
   00BD          +1   187     CANIDT2         DATA    0BDH    
   00BE          +1   188     CANIDT3         DATA    0BEH    
   00BF          +1   189     CANIDT4         DATA    0BFH    
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     4
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     4
 
   00C1          +1   190     CANGIE          DATA    0C1H
   00C2          +1   191     CANIE1          DATA    0C2H    
@@ -266,16 +266,16 @@ LOC  OBJ            LINE     SOURCE
 0051 75320F          246                                                     MOV TMP_DP, #0Fh ; RAM byte addressable to 
                              store temporarily "data pointer" for screen (random init value) 
                      247                                                     
-0054 754100          248                                                     MOV BLOCK1, #00h
-0057 754250          249                                                     MOV BLOCK2, #50h
-005A 754350          250                                                     MOV BLOCK3, #50h
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     5
+0054 754100          248                                                     MOV BLOCK1, #0
+0057 754208          249                                                     MOV BLOCK2, #8
+005A 754310          250                                                     MOV BLOCK3, #16
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     5
 
-005D 754450          251                                                     MOV BLOCK4, #50h
-0060 754558          252                                                     MOV BLOCK5, #58h
-0063 754658          253                                                     MOV BLOCK6, #58h
-0066 754758          254                                                     MOV BLOCK7, #58h
-0069 754858          255                                                     MOV BLOCK8, #58h
+005D 754418          251                                                     MOV BLOCK4, #24
+0060 754520          252                                                     MOV BLOCK5, #32
+0063 754628          253                                                     MOV BLOCK6, #40
+0066 754730          254                                                     MOV BLOCK7, #48
+0069 754838          255                                                     MOV BLOCK8, #56
                      256                                                     
 006C C2C1            257                                                     CLR DATA_BITS
 006E C2C0            258                                                     CLR SHIFT
@@ -337,7 +337,7 @@ LOC  OBJ            LINE     SOURCE
 00D4 C284            312     dichotomy02:                    CLR P0.4
 00D6 C285            313                                                     CLR P0.5
 00D8 D286            314                                                     SETB P0.6
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     6
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     6
 
 00DA D287            315                                                     SETB P0.7
 00DC 30822D          316                                                     JNB P0.2, dichotomy02zero
@@ -405,7 +405,7 @@ LOC  OBJ            LINE     SOURCE
                      378     
 0158 0201BC          379     intermediateletterA:    LJMP letterA ; too long jump otherwise
 015B 0201C8          380     intermediateletterE:    LJMP letterE
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     7
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     7
 
                      381     
 015E C284            382     dichotomy03one:                 CLR P0.4
@@ -473,7 +473,7 @@ LOC  OBJ            LINE     SOURCE
 01E7 C4              437                                                     SWAP A
 01E8 FB              438                                                     MOV  R3, A
 01E9 B80107          439     code2:                                  CJNE R0, #01h, code3
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     8
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     8
 
 01EC E532            440                                                     MOV A, TMP_DP
 01EE F546            441                                                     MOV BLOCK6, A
@@ -541,7 +541,7 @@ LOC  OBJ            LINE     SOURCE
 0250 758A00          495                                                     MOV TL0,#00h 
 0253 D0E0            496                                                     POP ACC
 0255 D0D0            497                                                     POP PSW
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE     9
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE     9
 
 0257 32              498                                                     RETI                                       
                                   
@@ -609,7 +609,7 @@ LOC  OBJ            LINE     SOURCE
 02BF 7C08            554                                                     MOV R4, #8 ; repeat pattern 8 times
                      555                                                     ; number of repeated pattern
 02C1 EC              556     loop4:                                  MOV A,R4
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE    10
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE    10
 
 02C2 2440            557                                                     ADD A,#DATABLOCK
 02C4 F8              558                                                     MOV R0,A
@@ -677,7 +677,7 @@ LOC  OBJ            LINE     SOURCE
 030F EF              616                             DB 11101111b
 0310 F7              617                             DB 11110111b
 0311 FB              618                             DB 11111011b
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE    11
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE    11
 
 0312 FD              619                             DB 11111101b
 0313 19              620     Key0:           DB 11001b
@@ -688,64 +688,64 @@ LOC  OBJ            LINE     SOURCE
 0318 16              625                             DB 10110b
 0319 19              626                             DB 11001b
 031A 00              627                             DB 00000b
-031B 1D              628     Key1:           DB 11101b
-031C 19              629                             DB 11001b
-031D 1D              630                             DB 11101b
-031E 1D              631                             DB 11101b
-031F 1D              632                             DB 11101b
-0320 1D              633                             DB 11101b
-0321 18              634                             DB 11000b
+031B 16              628     Key1:           DB 10110b
+031C 12              629                             DB 10010b
+031D 12              630                             DB 10010b
+031E 14              631                             DB 10100b
+031F 14              632                             DB 10100b
+0320 14              633                             DB 10100b
+0321 16              634                             DB 10110b
 0322 00              635                             DB 00000b
-0323 19              636     Key2:           DB 11001b
-0324 16              637                             DB 10110b
-0325 1E              638                             DB 11110b
-0326 1D              639                             DB 11101b
-0327 1B              640                             DB 11011b
+0323 10              636     Key2:           DB 10000b
+0324 17              637                             DB 10111b
+0325 17              638                             DB 10111b
+0326 10              639                             DB 10000b
+0327 17              640                             DB 10111b
 0328 17              641                             DB 10111b
 0329 10              642                             DB 10000b
 032A 00              643                             DB 00000b
-032B 19              644     Key3:           DB 11001b
+032B 10              644     Key3:           DB 10000b
 032C 16              645                             DB 10110b
-032D 1E              646                             DB 11110b
-032E 18              647                             DB 11000b
-032F 1E              648                             DB 11110b
-0330 16              649                             DB 10110b
-0331 19              650                             DB 11001b
+032D 16              646                             DB 10110b
+032E 10              647                             DB 10000b
+032F 17              648                             DB 10111b
+0330 17              649                             DB 10111b
+0331 17              650                             DB 10111b
 0332 00              651                             DB 00000b
-0333 1D              652     Key4:           DB 11101b
-0334 19              653                             DB 11001b
-0335 15              654                             DB 10101b
-0336 15              655                             DB 10101b
-0337 10              656                             DB 10000b
+0333 18              652     Key4:           DB 11000b
+0334 1D              653                             DB 11101b
+0335 1D              654                             DB 11101b
+0336 1D              655                             DB 11101b
+0337 1D              656                             DB 11101b
 0338 1D              657                             DB 11101b
-0339 1D              658                             DB 11101b
+0339 18              658                             DB 11000b
 033A 00              659                             DB 00000b
 033B 10              660     Key5:           DB 10000b
 033C 17              661                             DB 10111b
 033D 17              662                             DB 10111b
-033E 11              663                             DB 10001b
-033F 1E              664                             DB 11110b
-0340 16              665                             DB 10110b
-0341 19              666                             DB 11001b
+033E 10              663                             DB 10000b
+033F 17              664                             DB 10111b
+0340 17              665                             DB 10111b
+0341 10              666                             DB 10000b
 0342 00              667                             DB 00000b
-0343 19              668     Key6:           DB 11001b
-0344 16              669                             DB 10110b
+0343 10              668     Key6:           DB 10000b
+0344 17              669                             DB 10111b
 0345 17              670                             DB 10111b
-0346 11              671                             DB 10001b
-0347 16              672                             DB 10110b
-0348 16              673                             DB 10110b
-0349 19              674                             DB 11001b
+0346 17              671                             DB 10111b
+0347 17              672                             DB 10111b
+0348 17              673                             DB 10111b
+0349 10              674                             DB 10000b
 034A 00              675                             DB 00000b
 034B 10              676     Key7:           DB 10000b
-034C 1E              677                             DB 11110b
-034D 1E              678                             DB 11110b
-034E 18              679                             DB 11000b
-034F 1E              680                             DB 11110b
-0350 1E              681                             DB 11110b
-0351 1E              682                             DB 11110b
+034C 17              677                             DB 10111b
+034D 17              678                             DB 10111b
+034E 10              679                             DB 10000b
+034F 17              680                             DB 10111b
+0350 17              681                             DB 10111b
+0351 10              682                             DB 10000b
 0352 00              683                             DB 00000b
 0353 19              684     Key8:           DB 11001b
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE    12
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE    12
 
 0354 16              685                             DB 10110b
 0355 16              686                             DB 10110b
@@ -779,7 +779,7 @@ LOC  OBJ            LINE     SOURCE
 0371 10              714                             DB 10000b
 0372 00              715                             DB 00000b
                      716     end
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE    13
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE    13
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -847,7 +847,7 @@ CCAP1H. . . . . . .  D ADDR   00FBH   A
 CCAP1L. . . . . . .  D ADDR   00EBH   A   
 CCAP2H. . . . . . .  D ADDR   00FCH   A   
 CCAP2L. . . . . . .  D ADDR   00ECH   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE    14
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE    14
 
 CCAP3H. . . . . . .  D ADDR   00FDH   A   
 CCAP3L. . . . . . .  D ADDR   00EDH   A   
@@ -915,7 +915,7 @@ ET0 . . . . . . . .  B ADDR   00A8H.1 A
 ET1 . . . . . . . .  B ADDR   00A8H.3 A   
 ET2 . . . . . . . .  B ADDR   00A8H.5 A   
 ETIM. . . . . . . .  B ADDR   00E8H.2 A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE    15
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE    15
 
 EX0 . . . . . . . .  B ADDR   00A8H.0 A   
 EX1 . . . . . . . .  B ADDR   00A8H.2 A   
@@ -983,7 +983,7 @@ P3. . . . . . . . .  D ADDR   00B0H   A
 P4. . . . . . . . .  D ADDR   00C0H   A   
 PCON. . . . . . . .  D ADDR   0087H   A   
 PSW . . . . . . . .  D ADDR   00D0H   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 05/18/2016 16:48:44 PAGE    16
+A51 MACRO ASSEMBLER  TEST                                                                 05/18/2016 16:47:46 PAGE    16
 
 RB8 . . . . . . . .  B ADDR   0098H.2 A   
 RCAP2H. . . . . . .  D ADDR   00CBH   A   
